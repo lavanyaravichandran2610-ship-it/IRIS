@@ -1,0 +1,1716 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>IRIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: public landing page, then an app workspace with a left rail. Quiet ink-and-teal UI; the multicolour iris mark is the one bold element. */
+:root{
+  --bg:#F4F7FA; --surface:#FFFFFF; --surface-2:#EAF0F5; --line:#DAE2EB; --line-strong:#C3CEDB;
+  --fg:#0E1A2B; --muted:#55657B; --faint:#8696AB;
+  --accent:#0B7F86; --accent-ink:#FFFFFF; --accent-soft:#DCF0F1;
+  --good:#1B7A45; --good-soft:#E0F3E8; --warn:#9A5608; --warn-soft:#FBEBD3; --bad:#B52A3A; --bad-soft:#FBE3E6;
+  --shadow:0 1px 2px rgba(14,26,43,.05),0 8px 24px rgba(14,26,43,.06);
+  --l1:#14B8A6; --l2:#0EA5C6; --l3:#2F80ED; --l4:#4F6BE0; --l5:#7A5AE0; --l6:#36A3D9; --spark:#F2A93B;
+  --font-display:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --font-body:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#09111E; --surface:#0F1A2B; --surface-2:#16233A; --line:#22324B; --line-strong:#314564;
+  --fg:#E8EEF7; --muted:#9AABC3; --faint:#6F829D;
+  --accent:#3CC4C0; --accent-ink:#06222A; --accent-soft:#11313A;
+  --good:#58CB8D; --good-soft:#12301F; --warn:#EBA650; --warn-soft:#3A2A11; --bad:#F27B88; --bad-soft:#3B1920;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --l1:#2DD4BF; --l2:#22C1E3; --l3:#5B9DFA; --l4:#7A8CF0; --l5:#9C82F2; --l6:#5BBCEB; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#09111E; --surface:#0F1A2B; --surface-2:#16233A; --line:#22324B; --line-strong:#314564;
+  --fg:#E8EEF7; --muted:#9AABC3; --faint:#6F829D;
+  --accent:#3CC4C0; --accent-ink:#06222A; --accent-soft:#11313A;
+  --good:#58CB8D; --good-soft:#12301F; --warn:#EBA650; --warn-soft:#3A2A11; --bad:#F27B88; --bad-soft:#3B1920;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --l1:#2DD4BF; --l2:#22C1E3; --l3:#5B9DFA; --l4:#7A8CF0; --l5:#9C82F2; --l6:#5BBCEB; color-scheme:dark;}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--font-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-weight:500;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{width:100%;max-width:1180px;margin-inline:auto;padding-inline:20px}
+.muted{color:var(--muted)} .faint{color:var(--faint)}
+.mono{font-family:var(--font-mono);font-size:.86em}
+.eyebrow{font:500 12px var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.ic{flex:none;vertical-align:-3px}
+
+/* buttons, pills, inputs */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:9px 15px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--fg);font-weight:500;font-size:14px;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--fg);background:var(--surface-2)}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:7px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:99px;font:500 12px var(--font-body);background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.pill.good{background:var(--good-soft);color:var(--good)} .pill.warn{background:var(--warn-soft);color:var(--warn)} .pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.accent{background:var(--accent-soft);color:var(--accent)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:99px;border:1px solid var(--line-strong);background:var(--surface);font-size:13px;cursor:pointer;color:var(--fg)}
+.chip:hover{border-color:var(--accent)} .chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+input[type=text],input[type=number],input[type=search],select,textarea{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--fg);font:inherit}
+textarea{resize:vertical}
+label.f{display:grid;gap:5px;font-size:13px;color:var(--muted);font-weight:500}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.card.pad{padding:20px}
+.divider{height:1px;background:var(--line);border:0;margin:0}
+
+/* brand */
+.brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.brand-name{font:400 26px/1 var(--font-display);letter-spacing:.14em}
+.logo{display:block;color:var(--fg)}
+
+/* landing */
+.site-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.site-head .bar{display:flex;align-items:center;gap:20px;min-height:64px}
+.site-nav{display:flex;gap:4px;margin-left:12px;flex:1}
+.site-nav button{background:none;border:0;padding:8px 12px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:500}
+.site-nav button:hover{color:var(--fg);background:var(--surface-2)}
+.bar-actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+.bar-actions .btn{white-space:nowrap}
+.hero{padding-block:72px 56px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center}
+.hero h1{font:400 clamp(42px,6.4vw,76px)/1.0 var(--font-display);letter-spacing:-.02em;margin:14px 0 20px}
+.hero h1 em{color:var(--accent)}
+.hero .lead{font-size:18px;color:var(--muted);max-width:56ch}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.hero .tag{display:inline-flex;align-items:center;gap:10px;margin-bottom:6px}
+.demo{padding:20px;box-shadow:var(--shadow)}
+.demo-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.demo-scores{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:16px}
+.demo-scores .arrow{color:var(--faint)}
+.demo-score{display:grid;justify-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.demo-lines{display:grid;gap:8px}
+.demo-line{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;padding:9px 11px;border-radius:8px;background:var(--surface-2)}
+.demo-line .pill{margin-top:1px}
+section.block{padding-block:64px}
+section.block.alt{background:var(--surface);border-block:1px solid var(--line)}
+.sec-head{max-width:62ch;margin-bottom:36px;display:grid;gap:10px}
+.sec-head h2{font:400 clamp(30px,4vw,44px)/1.05 var(--font-display);letter-spacing:-.01em}
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.phase{padding:20px}
+.phase h3{font:500 13px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.phase ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.phase li{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.phase .n{font:500 12px var(--font-mono);color:var(--accent);background:var(--accent-soft);border-radius:6px;padding:3px 0;text-align:center}
+.phase li b{font-weight:600;display:block}
+.phase li span{color:var(--muted);font-size:13.5px}
+.features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.feature{padding:24px;display:grid;gap:10px;align-content:start}
+.feature .icbox{width:38px;height:38px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.feature h3{font:400 26px/1.1 var(--font-display)}
+.feature p{color:var(--muted)}
+.feature .btn{justify-self:start;margin-top:6px}
+.dra{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.dra .step{padding:20px;display:grid;gap:8px}
+.dra .step h3{font:400 26px/1 var(--font-display)}
+.dra .step .k{font:500 12px var(--font-mono);color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.dra p{color:var(--muted);font-size:14px}
+.cta-band{padding:44px;text-align:left;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.cta-band h2{font:400 clamp(28px,3.6vw,40px)/1.05 var(--font-display);max-width:22ch}
+footer.site-foot{padding-block:32px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+footer .row{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+
+/* app shell */
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.rail{position:sticky;top:0;align-self:start;height:100vh;padding:20px 14px;border-right:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:18px;overflow:auto}
+.rail .brand{padding:2px 8px}
+.nav{display:grid;gap:2px}
+.nav h6{margin:12px 10px 6px;font:500 11px var(--font-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border:0;background:none;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:500}
+.nav button:hover{background:var(--surface-2);color:var(--fg)}
+.nav button.on{background:var(--accent-soft);color:var(--accent)}
+.rail-foot{margin-top:auto;display:grid;gap:10px;font-size:12.5px;color:var(--muted)}
+.rail-proj{padding:11px 12px;border-radius:10px;background:var(--surface-2)}
+.rail-proj b{display:block;color:var(--fg);font-weight:600;font-size:13px}
+.main{min-width:0;padding:28px 32px 64px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.page-head h1{font:400 clamp(28px,3.4vw,40px)/1.05 var(--font-display);letter-spacing:-.01em;max-width:30ch}
+.page-head p{margin-top:8px;max-width:64ch}
+.topline{display:flex;justify-content:flex-end;margin-bottom:6px}
+
+/* dashboard */
+.stages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.stage{padding:14px;text-align:left;display:grid;gap:6px;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--surface);align-content:start}
+.stage:hover{border-color:var(--accent)}
+.stage .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.stage .num{font:500 12px var(--font-mono);color:var(--faint)}
+.stage b{font-weight:600}
+.stage span.d{font-size:13px;color:var(--muted)}
+.stage.current{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.stage.done .num{color:var(--good)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{padding:16px}
+.stat .v{font:400 34px/1 var(--font-display);margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.stat .l{font-size:13px;color:var(--muted)}
+.activity{list-style:none;margin:0;padding:0;display:grid}
+.activity li{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.activity li:last-child{border-bottom:0}
+.activity time{font:12px var(--font-mono);color:var(--faint);padding-top:2px}
+
+/* discover */
+.disc{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+.searchbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.searchbar .grow{flex:1;min-width:220px;position:relative}
+.searchbar .grow .ic{position:absolute;left:12px;top:11px;color:var(--faint)}
+.searchbar input{padding-left:38px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.papers{display:grid;gap:12px}
+.paper{padding:18px;display:grid;gap:10px}
+.paper h3{font:400 23px/1.15 var(--font-display)}
+.paper .meta{font-size:13px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.paper .sum{font-size:14.5px}
+.paper .tags{display:flex;gap:6px;flex-wrap:wrap}
+.paper .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.paper .links{display:flex;gap:8px;flex-wrap:wrap}
+.paper .links a{display:inline-flex;gap:5px;align-items:center;font-size:13px;font-weight:500;text-decoration:none;padding:4px 9px;border-radius:7px;background:var(--surface-2)}
+.paper .links a:hover{background:var(--accent-soft)}
+.rel{height:4px;border-radius:3px;background:var(--surface-2);overflow:hidden;width:90px}
+.rel i{display:block;height:100%;background:var(--accent)}
+.lib{padding:16px;position:sticky;top:20px}
+.lib h3{font:400 22px var(--font-display);margin-bottom:10px}
+.lib ul{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}
+.lib li{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;font-size:13.5px}
+.lib li small{display:block;color:var(--muted)}
+.note{font-size:13px;color:var(--muted);padding:11px 13px;border-radius:9px;background:var(--surface-2)}
+
+/* copilot */
+.cop{display:grid;grid-template-columns:270px minmax(0,1fr);gap:20px;align-items:start}
+.ctx{padding:16px;position:sticky;top:20px;display:grid;gap:12px}
+.ctx h3{font:400 22px var(--font-display)}
+.ctx label{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;font-size:13.5px;cursor:pointer}
+.ctx label small{display:block;color:var(--muted)}
+.ctx input[type=checkbox],.checklist input[type=checkbox]{width:16px;height:16px;margin-top:3px;accent-color:var(--accent)}
+.chatbox{display:grid;grid-template-rows:1fr auto;min-height:560px;max-height:calc(100vh - 150px)}
+.msgs{overflow:auto;padding:20px;display:grid;gap:18px;align-content:start}
+.msg{display:grid;gap:8px;max-width:88%}
+.msg.user{justify-self:end}
+.msg.user .bub{background:var(--accent);color:var(--accent-ink);border-radius:14px 14px 3px 14px;padding:10px 14px}
+.msg.ai{grid-template-columns:30px minmax(0,1fr);column-gap:10px;max-width:100%}
+.msg.ai .bub{min-width:0}
+.bub p+p,.bub p+ul,.bub ul+p,.bub p+.tscroll{margin-top:8px}
+.bub ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.bub h4{font:600 14px var(--font-body);margin:10px 0 4px}
+.cm{font:500 11px var(--font-mono);color:var(--accent);vertical-align:super;margin-left:1px}
+.srcs{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;font-size:12.5px}
+.srcs a{text-decoration:none;padding:3px 8px;border-radius:6px;background:var(--surface-2);color:var(--muted)}
+.srcs a:hover{color:var(--accent)}
+.tscroll{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:13.5px}
+table.t th,table.t td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font:500 12px var(--font-mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+table.t td.num,table.t th.num{text-align:right;font-variant-numeric:tabular-nums}
+.gap{padding:12px 14px;border:1px solid var(--line);border-radius:10px;display:grid;gap:8px;margin-top:8px;background:var(--bg)}
+.composer{border-top:1px solid var(--line);padding:14px;display:grid;gap:10px}
+.composer .qp{display:flex;gap:8px;flex-wrap:wrap}
+.composer .in{display:flex;gap:10px;align-items:flex-end}
+.composer textarea{min-height:44px;max-height:140px}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:bl 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+/* experiments */
+.exp{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+.ctrl{padding:18px;display:grid;gap:14px;position:sticky;top:20px}
+.ctrl h3{font:400 22px var(--font-display)}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric{padding:14px}
+.metric .v{font:400 30px/1 var(--font-display);font-variant-numeric:tabular-nums;margin-top:6px}
+.metric .l{font-size:12.5px;color:var(--muted)}
+.res-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.cm-grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px;align-items:stretch;font-size:13px}
+.cm-grid .h{color:var(--muted);font:500 11px var(--font-mono);display:grid;place-items:center;padding:2px 6px;text-align:center}
+.cm-cell{padding:16px 8px;border-radius:8px;text-align:center;font:400 28px/1 var(--font-display);border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.cm-cell small{display:block;font:11px var(--font-body);color:var(--muted);margin-top:4px}
+.bars{display:grid;gap:9px}
+.bar-row{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-size:13px}
+.bar-row .trk{height:9px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.bar-row .trk i{display:block;height:100%;background:var(--accent);border-radius:5px}
+.bar-row.alt .trk i{background:var(--l4)}
+.bar-row .v{font:12px var(--font-mono);text-align:right}
+.ch{width:100%;height:auto;display:block}
+.ch text{fill:var(--muted);font:10.5px var(--font-mono)}
+.ch .gl{stroke:var(--line);stroke-width:1}
+.ch .ln{stroke:var(--accent);fill:none;stroke-width:2;stroke-linejoin:round}
+.ch .ar{fill:var(--accent-soft)}
+.ch .dot{fill:var(--accent)}
+tr.sel td{background:var(--accent-soft)}
+tr.clk{cursor:pointer}
+tr.clk:hover td{background:var(--surface-2)}
+
+/* integrity */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+.editor{padding:16px;display:grid;gap:10px;position:sticky;top:20px}
+.editor textarea{min-height:520px;font:14.5px/1.65 var(--font-body)}
+.editor .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.pipe{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.pipe button{display:grid;gap:3px;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.pipe button:hover:not([disabled]){border-color:var(--accent)}
+.pipe button[disabled]{opacity:.55;cursor:not-allowed}
+.pipe .k{font:500 11px var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.pipe b{font:400 21px var(--font-display)}
+.pipe small{color:var(--muted);font-size:12.5px}
+.pipe button.on{border-color:var(--accent);background:var(--accent-soft)}
+.pipe button.on .k{color:var(--accent)}
+.score{padding:18px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-bottom:16px}
+.ring{position:relative;width:104px;height:104px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .trk{stroke:var(--surface-2)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font:400 34px var(--font-display);font-variant-numeric:tabular-nums}
+.comp{display:grid;gap:7px}
+.comp .r{display:grid;grid-template-columns:128px 1fr 34px;gap:10px;align-items:center;font-size:13px}
+.comp .trk{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.comp .trk i{display:block;height:100%;border-radius:4px}
+.comp .v{font:12px var(--font-mono);text-align:right}
+.banner{padding:10px 13px;border-radius:9px;background:var(--warn-soft);color:var(--warn);font-size:13.5px;margin-bottom:14px}
+.finds{display:grid;gap:10px}
+.finding{padding:14px 16px;display:grid;gap:7px}
+.finding header{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.finding .cat{font:500 11px var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.finding h4{font:600 14.5px var(--font-body)}
+.finding p{font-size:13.5px;color:var(--muted)}
+.finding blockquote{margin:0;padding:8px 11px;border-left:3px solid var(--line-strong);background:var(--surface-2);font-size:13px;border-radius:0 6px 6px 0}
+.finding .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.cmp{width:100%}
+.delta.up{color:var(--good)} .delta.down{color:var(--bad)}
+
+/* publish */
+.pub{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px;align-items:start}
+.venues{display:grid;gap:10px}
+.venue{padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface);display:grid;gap:8px;cursor:pointer;text-align:left}
+.venue:hover{border-color:var(--accent)}
+.venue.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.venue .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.venue b{font-weight:600}
+.venue .fit{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font:12px var(--font-mono);color:var(--muted)}
+.venue .trk{height:5px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.venue .trk i{display:block;height:100%;background:var(--accent)}
+.checklist{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.checklist li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.checklist li:last-child{border-bottom:0}
+.checklist .auto{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;margin-top:2px}
+.checklist .auto.ok{background:var(--good-soft);color:var(--good)}
+.checklist .auto.no{background:var(--bad-soft);color:var(--bad)}
+.checklist small{display:block;color:var(--muted);font-size:12.5px}
+.docs{display:grid;gap:10px}
+.doc{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:10px}
+.doc small{display:block;color:var(--muted)}
+.section-gap{display:grid;gap:16px}
+.h3d{font:400 24px/1.1 var(--font-display);margin-bottom:10px}
+
+/* auth + profile */
+.auth{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);min-height:100vh}
+.auth-side{background:var(--surface-2);border-right:1px solid var(--line);padding:32px 40px;display:flex;flex-direction:column;justify-content:space-between;gap:32px}
+.auth-side h2{font:400 clamp(30px,3.4vw,44px)/1.05 var(--font-display);letter-spacing:-.01em;max-width:16ch;margin-bottom:18px}
+.auth-side ul{list-style:none;margin:0;padding:0;display:grid;gap:12px;max-width:42ch;color:var(--muted)}
+.auth-side li{display:grid;grid-template-columns:22px 1fr;gap:8px}
+.auth-side li .ic{color:var(--accent);margin-top:2px}
+.auth-main{padding:20px 32px 40px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.auth-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.auth-card{width:100%;max-width:440px;margin:auto;padding:28px;box-shadow:var(--shadow);display:grid;gap:16px}
+.auth-card h1{font:400 32px/1.05 var(--font-display)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:10px;background:var(--surface-2)}
+.tabs button{border:0;background:none;padding:8px;border-radius:7px;font-weight:500;color:var(--muted);cursor:pointer}
+.tabs button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(14,26,43,.1)}
+.err{padding:9px 12px;border-radius:8px;background:var(--bad-soft);color:var(--bad);font-size:13.5px}
+.demo-note{padding:11px 13px;border-radius:9px;background:var(--warn-soft);color:var(--warn);font-size:13px}
+.codechip{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:7px;background:var(--surface);font:500 18px var(--font-mono);letter-spacing:.2em;color:var(--fg)}
+.otp{font:500 26px var(--font-mono)!important;letter-spacing:.5em;text-align:center}
+.rail-user{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding-top:10px;border-top:1px solid var(--line)}
+.rail-user .who{min-width:0}
+.rail-user b,.rail-user small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rail-user b{color:var(--fg);font-size:13px}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:600 13px var(--font-body)}
+.avatar.lg{width:64px;height:64px;font-size:22px}
+.prof{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:20px;align-items:start}
+.prof-head{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+.form-grid{display:grid;gap:14px}
+.danger{border-color:var(--bad)}
+@media (max-width:900px){.auth{grid-template-columns:minmax(0,1fr)}.auth-side{padding:20px 16px;border-right:0;border-bottom:1px solid var(--line)}.auth-side ul,.auth-side h2{display:none}.auth-main{padding:16px}.prof{grid-template-columns:minmax(0,1fr)}}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;transition:all .25s;z-index:50;max-width:calc(100vw - 32px)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1060px){
+  .stages{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .split,.pub,.res-grid{grid-template-columns:minmax(0,1fr)}
+  .editor,.ctrl,.ctx,.lib{position:static}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .hero-grid,.disc,.cop,.exp,.grid2{grid-template-columns:minmax(0,1fr)}
+  .phases,.features,.dra{grid-template-columns:minmax(0,1fr)}
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line);gap:10px}
+  .rail .nav{display:flex;gap:4px;overflow-x:auto;width:100%;order:3;padding-bottom:2px}
+  .nav h6{display:none}
+  .nav button{white-space:nowrap;width:auto}
+  .rail-foot{display:none}
+  .main{padding:20px 16px 56px}
+  .hero{padding-block:40px 32px}
+  .chatbox{max-height:none}
+  .site-nav{display:none}
+  .stages{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cta-band{padding:28px}
+}
+@media (max-width:520px){
+  .stages{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:minmax(0,1fr)}
+  .score{grid-template-columns:minmax(0,1fr);justify-items:start}
+  .pipe{grid-template-columns:minmax(0,1fr)}
+  .comp .r{grid-template-columns:100px 1fr 30px}
+  .bar-row{grid-template-columns:100px 1fr 46px}
+  .demo-scores{grid-template-columns:1fr}
+  .demo-scores .arrow{display:none}
+  .msg{max-width:100%}
+  .bar-actions .btn.primary{padding:8px 11px;font-size:13px}
+  .site-head .bar{gap:10px}
+  .brand-name{font-size:23px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="iris-mark" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29.5" fill="none" stroke="currentColor" stroke-width="2.6"/><g transform="translate(32 32)"><ellipse cy="-13.5" rx="6.8" ry="13" transform="rotate(0)" fill-opacity=".82" style="fill:var(--l1)"/><ellipse cy="-13.5" rx="6.8" ry="13" transform="rotate(60)" fill-opacity=".82" style="fill:var(--l2)"/><ellipse cy="-13.5" rx="6.8" ry="13" transform="rotate(120)" fill-opacity=".82" style="fill:var(--l3)"/><ellipse cy="-13.5" rx="6.8" ry="13" transform="rotate(180)" fill-opacity=".82" style="fill:var(--l4)"/><ellipse cy="-13.5" rx="6.8" ry="13" transform="rotate(240)" fill-opacity=".82" style="fill:var(--l5)"/><ellipse cy="-13.5" rx="6.8" ry="13" transform="rotate(300)" fill-opacity=".82" style="fill:var(--l6)"/></g><circle cx="32" cy="32" r="7.2" fill="currentColor"/><circle cx="34.6" cy="29.4" r="2.1" style="fill:var(--spark)"/></symbol></defs></svg>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div><div id="iris-api-status" style="position:fixed;right:14px;bottom:12px;z-index:40;padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--muted);font:11px var(--font-mono);box-shadow:var(--shadow)">API checking…</div>
+<script>
+/* ================= Prototype corpus (16 papers). Summaries are short paraphrases written for this prototype. ================= */
+const PAPERS=[
+{id:'vaswani2017',a:'Vaswani',authors:'Vaswani et al.',year:2017,title:'Attention Is All You Need',venue:'NeurIPS',kind:'Conference',arxiv:'1706.03762',tags:['transformer','attention','sequence modelling','nlp'],
+ short:'replaces recurrence with self-attention for sequence transduction',
+ summary:'Introduces the Transformer, a sequence model built entirely on attention with no recurrence or convolution.',
+ method:'Stacked encoder and decoder layers using multi-head self-attention, position-wise feed-forward layers and positional encodings.',
+ data:'Machine translation benchmarks (WMT 2014 English-German and English-French).',
+ findings:['Reached state-of-the-art translation quality at the time of publication.','Trained substantially faster than recurrent and convolutional baselines because computation parallelises across positions.'],
+ limits:['Self-attention cost grows quadratically with sequence length.','Evaluated mainly on translation and parsing tasks.']},
+{id:'devlin2019',a:'Devlin',authors:'Devlin et al.',year:2019,title:'BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding',venue:'NAACL',kind:'Conference',arxiv:'1810.04805',tags:['transformer','pre-training','nlp','language model'],
+ short:'pre-trains deep bidirectional Transformers that are fine-tuned for downstream tasks',
+ summary:'Pre-trains deep bidirectional Transformer representations that are fine-tuned for many language tasks with minimal task-specific changes.',
+ method:'Masked language modelling and next-sentence prediction on large unlabelled text, followed by fine-tuning on each task.',
+ data:'BooksCorpus and English Wikipedia for pre-training; GLUE, SQuAD and other benchmarks for evaluation.',
+ findings:['Improved results on a broad set of language understanding benchmarks.','Showed that one pre-trained model can be adapted to many tasks by adding a small output layer.'],
+ limits:['Pre-training is computationally expensive.','Input length is limited to 512 tokens.']},
+{id:'lewis2020',a:'Lewis',authors:'Lewis et al.',year:2020,title:'Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks',venue:'NeurIPS',kind:'Conference',arxiv:'2005.11401',tags:['retrieval','generation','llm','question answering'],
+ short:'grounds a text generator in passages fetched by a dense retriever',
+ summary:'Combines a pre-trained sequence-to-sequence generator with a dense retriever over a Wikipedia index so that answers draw on retrieved passages.',
+ method:'A retriever fetches the top passages and the generator conditions on them; retriever and generator are fine-tuned together.',
+ data:'Open-domain question answering, fact verification and knowledge-intensive generation tasks.',
+ findings:['Set strong results on several open-domain question answering benchmarks.','Generated text was more factual and specific than a parametric-only baseline.'],
+ limits:['Answer quality depends on what the retrieval index contains.','The generator can still misuse or ignore retrieved passages.']},
+{id:'karpukhin2020',a:'Karpukhin',authors:'Karpukhin et al.',year:2020,title:'Dense Passage Retrieval for Open-Domain Question Answering',venue:'EMNLP',kind:'Conference',arxiv:'2004.04906',tags:['retrieval','dense embeddings','question answering'],
+ short:'learns dense vector retrieval that can beat sparse keyword retrieval',
+ summary:'Shows that dense vector retrieval learned from a modest number of question-passage pairs can outperform sparse BM25 retrieval for open-domain question answering.',
+ method:'A dual encoder (question encoder and passage encoder) trained with in-batch negatives and hard negatives.',
+ data:'Open-domain QA datasets such as Natural Questions and TriviaQA with a Wikipedia passage collection.',
+ findings:['Improved top-k passage retrieval accuracy over BM25.','Better retrieval translated into better end-to-end question answering.'],
+ limits:['Needs labelled question-passage pairs for training.','The index must be rebuilt when the encoder changes.']},
+{id:'brown2020',a:'Brown',authors:'Brown et al.',year:2020,title:'Language Models are Few-Shot Learners',venue:'NeurIPS',kind:'Conference',arxiv:'2005.14165',tags:['llm','few-shot','in-context learning','nlp'],
+ short:'shows that a very large language model can perform tasks from a few prompt examples',
+ summary:'Scales an autoregressive language model to 175 billion parameters and shows that it can perform many tasks from instructions and a few examples in the prompt, with no gradient updates.',
+ method:'Zero-shot, one-shot and few-shot in-context evaluation of a very large Transformer language model.',
+ data:'A broad suite of NLP benchmarks spanning translation, question answering, cloze and reasoning tasks.',
+ findings:['Few-shot performance improved steadily with model size.','Was competitive with fine-tuned systems on some tasks without task-specific training.'],
+ limits:['Weak on some tasks that need careful reasoning or comparison.','High compute cost and open concerns about bias and misuse.']},
+{id:'mcmahan2017',a:'McMahan',authors:'McMahan et al.',year:2017,title:'Communication-Efficient Learning of Deep Networks from Decentralized Data',venue:'AISTATS',kind:'Conference',arxiv:'1602.05629',tags:['federated','privacy','distributed learning'],
+ short:'trains a shared model by averaging updates computed on devices that keep their data',
+ summary:'Introduces federated learning with the FedAvg algorithm, which trains a shared model by averaging updates computed on-device while the data stays local.',
+ method:'Clients run several local gradient steps and a server averages the resulting model weights each round.',
+ data:'Image classification (MNIST, CIFAR-10) and language modelling experiments.',
+ findings:['Cut the number of communication rounds by large factors compared with synchronised SGD.','Worked on non-IID and unbalanced data partitions.'],
+ limits:['Convergence guarantees are limited under heavy data heterogeneity.','Does not by itself provide formal privacy guarantees.']},
+{id:'snell2017',a:'Snell',authors:'Snell et al.',year:2017,title:'Prototypical Networks for Few-shot Learning',venue:'NeurIPS',kind:'Conference',arxiv:'1703.05175',tags:['few-shot','metric learning','classification'],
+ short:'classifies new examples by distance to class prototypes built from a few labelled samples',
+ summary:'A few-shot classifier that represents each class by the mean of its embedded support examples and labels queries by the nearest prototype.',
+ method:'Learn an embedding space in which distance to class prototypes drives classification, trained episodically.',
+ data:'Omniglot and miniImageNet few-shot benchmarks.',
+ findings:['A simple design matched or beat more complex few-shot methods at publication.','The same idea extends to zero-shot learning.'],
+ limits:['A single mean prototype struggles with classes that have several modes.','Relies on a good embedding for the target domain.']},
+{id:'finn2017',a:'Finn',authors:'Finn et al.',year:2017,title:'Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks',venue:'ICML',kind:'Conference',arxiv:'1703.03400',tags:['few-shot','meta-learning','optimisation'],
+ short:'learns model initialisations that adapt to new tasks in a few gradient steps',
+ summary:'Learns model initial parameters that can adapt to a new task in a few gradient steps.',
+ method:'Bi-level optimisation in which the outer loop tunes the initialisation for post-adaptation performance across many tasks.',
+ data:'Few-shot image classification, regression and reinforcement learning tasks.',
+ findings:['Gave competitive few-shot classification without adding model parameters.','Works with any model trained by gradient descent.'],
+ limits:['Second-order gradients make training costly.','Results can be sensitive to hyperparameters and architecture.']},
+{id:'chen2016',a:'Chen',authors:'Chen and Guestrin',year:2016,title:'XGBoost: A Scalable Tree Boosting System',venue:'KDD',kind:'Conference',arxiv:'1603.02754',tags:['tree-ensemble','gradient boosting','tabular','classification'],
+ short:'provides a scalable, regularised gradient-boosted tree system',
+ summary:'A scalable, regularised gradient-boosted tree system widely used for tabular data.',
+ method:'Sparsity-aware split finding, a weighted quantile sketch, cache-aware block structure and out-of-core computation.',
+ data:'Several large datasets covering ranking and classification tasks.',
+ findings:['Scaled to very large datasets with modest hardware.','Was used in many winning solutions of data-science competitions.'],
+ limits:['Many hyperparameters need tuning.','Less suited than deep networks to raw unstructured inputs.']},
+{id:'breiman2001',a:'Breiman',authors:'Breiman',year:2001,title:'Random Forests',venue:'Machine Learning',kind:'Journal',doi:'10.1023/A:1010933404324',tags:['tree-ensemble','classification','bagging','tabular'],
+ short:'combines many randomised decision trees by voting',
+ summary:'Random forests grow many decision trees on bootstrap samples with random feature selection and combine their votes.',
+ method:'Bagging plus a random subset of features at each split; out-of-bag samples estimate error and variable importance.',
+ data:'Tabular benchmark datasets from the UCI repository.',
+ findings:['Generalisation error converges as trees are added, so forests do not overfit with more trees.','Accuracy is comparable to boosting, with better robustness to label noise.'],
+ limits:['Less interpretable than a single tree.','Memory and prediction cost grow with the number of trees.']},
+{id:'liu2008',a:'Liu',authors:'Liu et al.',year:2008,title:'Isolation Forest',venue:'ICDM',kind:'Conference',doi:'10.1109/ICDM.2008.17',tags:['anomaly','tree-ensemble','unsupervised'],
+ short:'detects anomalies by how quickly random partitions isolate them',
+ summary:'Detects anomalies by isolating points with random partitions, since anomalies need fewer splits to be isolated.',
+ method:'An ensemble of random isolation trees; the anomaly score derives from the average path length of a point.',
+ data:'Benchmark anomaly detection datasets.',
+ findings:['Has linear time complexity and a low memory requirement.','Handles high-dimensional data without computing distances.'],
+ limits:['Axis-parallel splits can miss anomalies hidden along other directions.','The score depends on the sub-sample size.']},
+{id:'kingma2015',a:'Kingma',authors:'Kingma and Ba',year:2015,title:'Adam: A Method for Stochastic Optimization',venue:'ICLR',kind:'Conference',arxiv:'1412.6980',tags:['optimisation','deep learning'],
+ short:'adapts step sizes from running estimates of gradient moments',
+ summary:'A first-order optimiser that uses adaptive estimates of lower-order moments of the gradients.',
+ method:'Exponential moving averages of the gradient and the squared gradient, with bias correction.',
+ data:'Logistic regression, multilayer perceptrons and convolutional networks on MNIST, IMDB and CIFAR-10.',
+ findings:['Worked robustly across models with little tuning.','Is memory-efficient and computationally light.'],
+ limits:['Later work showed the original convergence proof fails in some settings.','Can generalise worse than plain SGD on some problems.']},
+{id:'he2016',a:'He',authors:'He et al.',year:2016,title:'Deep Residual Learning for Image Recognition',venue:'CVPR',kind:'Conference',arxiv:'1512.03385',tags:['deep learning','computer vision','residual'],
+ short:'adds shortcut connections so very deep networks can be trained',
+ summary:'Residual connections let very deep networks train by learning residual functions with respect to each layer input.',
+ method:'Shortcut connections add the input of a block to its output.',
+ data:'ImageNet, CIFAR-10 and COCO.',
+ findings:['Networks with up to 152 layers outperformed shallower ones.','Won the ILSVRC 2015 classification task.'],
+ limits:['Greater depth raises compute and memory cost.','Evaluation centres on image tasks.']},
+{id:'srivastava2014',a:'Srivastava',authors:'Srivastava et al.',year:2014,title:'Dropout: A Simple Way to Prevent Neural Networks from Overfitting',venue:'JMLR',kind:'Journal',url:'https://jmlr.org/papers/v15/srivastava14a.html',tags:['regularisation','deep learning','overfitting'],
+ short:'randomly drops units during training to reduce overfitting',
+ summary:'Randomly omits units during training to reduce co-adaptation and overfitting.',
+ method:'Each unit is kept with probability p during training and a scaled full network is used at test time.',
+ data:'Vision, speech, text and computational biology benchmarks.',
+ findings:['Improved generalisation across many domains.','Gave state-of-the-art results on several benchmarks at the time.'],
+ limits:['Training takes longer to converge.','Interacts awkwardly with some normalisation layers.']},
+{id:'mirsky2018',a:'Mirsky',authors:'Mirsky et al.',year:2018,title:'Kitsune: An Ensemble of Autoencoders for Online Network Intrusion Detection',venue:'NDSS',kind:'Conference',arxiv:'1802.09089',tags:['intrusion','iot','anomaly','autoencoder','online','network'],
+ short:'detects attacks online and without labels using an ensemble of small autoencoders',
+ summary:'Unsupervised, online network intrusion detection built from an ensemble of small autoencoders that runs on low-cost hardware.',
+ method:'A feature extractor for packet streams feeds an ensemble of autoencoders; the anomaly score comes from reconstruction error.',
+ data:'Captured attack traces from IP-camera and IoT networks, including surveillance and botnet attacks.',
+ findings:['Detected attacks in real time on a modest router-class device.','Was competitive with offline detectors while training online without labels.'],
+ limits:['Reconstruction-error thresholds need to be set for each deployment.','Evaluation covers a fixed set of attack types.']},
+{id:'sharafaldin2018',a:'Sharafaldin',authors:'Sharafaldin et al.',year:2018,title:'Toward Generating a New Intrusion Detection Dataset and Intrusion Traffic Characterization',venue:'ICISSP',kind:'Conference',doi:'10.5220/0006639801080116',tags:['intrusion','dataset','network','benchmark'],
+ short:'provides a labelled flow dataset with realistic benign traffic and common attack families',
+ summary:'Creates the CICIDS2017 dataset with realistic benign traffic and common attack families, together with criteria for building intrusion detection datasets.',
+ method:'Generated profiled benign behaviour, executed attacks, extracted flow features with CICFlowMeter and labelled each flow.',
+ data:'Five days of captured network traffic labelled by attack type.',
+ findings:['Provides labelled flows for DoS, brute force, web attacks, botnet and other categories.','Evaluated several classical machine learning algorithms on the resulting flow features.'],
+ limits:['Benign and attack flows are heavily imbalanced.','Collected in a lab environment rather than a production network.']}
+];
+const PBY=Object.fromEntries(PAPERS.map(p=>[p.id,p]));
+const citeOf=p=>p.authors+', '+p.year;
+function linksOf(p){
+  const L=[];
+  if(p.arxiv){L.push({label:'arXiv',url:'https://arxiv.org/abs/'+p.arxiv});L.push({label:'DOI',url:'https://doi.org/10.48550/arXiv.'+p.arxiv});}
+  if(p.doi)L.push({label:'DOI',url:'https://doi.org/'+p.doi});
+  if(p.url)L.push({label:'Publisher',url:p.url});
+  return L;
+}
+const GLOSSARY=[
+ {re:/\brag\b|retrieval.augmented/i,name:'Retrieval-augmented generation (RAG)',text:'A model answers using passages fetched from a document index at question time, instead of relying only on what it memorised during training. Answers can then point back to their sources.'},
+ {re:/anomaly|outlier/i,name:'Anomaly detection',text:'Flagging records that differ from what the system normally sees, usually without labelled examples of every possible attack or fault. It suits settings where new attack types keep appearing.'},
+ {re:/federated|fedavg/i,name:'Federated learning',text:'Several parties train one shared model while their raw data stays on their own devices. Only model updates are sent and averaged by a coordinating server.'},
+ {re:/few.shot|prototype/i,name:'Few-shot learning',text:'Learning to recognise a new class from a handful of labelled examples. Prototype methods average the embeddings of those examples and classify by nearest prototype.'},
+ {re:/random forest|bagging/i,name:'Random forest',text:'An ensemble of decision trees, each trained on a bootstrap sample with random feature choices at each split. Predictions are combined by voting, which reduces variance.'},
+ {re:/\bf1\b|precision|recall/i,name:'Precision, recall and F1',text:'Precision is the share of raised alerts that were real attacks. Recall is the share of real attacks that were caught. F1 is their harmonic mean, so it drops when either one is low.'},
+ {re:/overfit|regulari[sz]/i,name:'Overfitting',text:'A model fits noise in the training data and then performs worse on new data. Held-out test sets, simpler models and regularisation such as dropout are common remedies.'},
+ {re:/autoencoder|reconstruction/i,name:'Autoencoder',text:'A network trained to compress an input and rebuild it. Inputs that rebuild poorly, meaning a high reconstruction error, are treated as unusual.'},
+ {re:/non.?iid|heterogene/i,name:'Non-IID data',text:'Data that is not drawn from the same distribution across clients or sites. It is the usual reason federated training converges more slowly than centralised training.'},
+ {re:/transformer|attention/i,name:'Self-attention',text:'Each element of a sequence computes weights over all other elements and mixes their representations accordingly. It lets models relate distant positions without recurrence.'}
+];
+
+/* ================= Retrieval (TF-IDF) ================= */
+const STOP=new Set('a an the of and or to in on for with by from as is are was were be been it its this that these those at we our us can than then into over under using use used via not no but if so such also more most their they them which who whom how what why when where does do did has have had will would should could may might about between each other'.split(' '));
+function stem(w){
+  if(w.length>4&&w.endsWith('ies'))return w.slice(0,-3)+'y';
+  if(w.length>5&&w.endsWith('ing'))return w.slice(0,-3);
+  if(w.length>4&&w.endsWith('ed'))return w.slice(0,-2);
+  if(w.length>3&&w.endsWith('s')&&!w.endsWith('ss'))return w.slice(0,-1);
+  return w;
+}
+function toks(t){return (String(t).toLowerCase().match(/[a-z0-9]+/g)||[]).filter(w=>!STOP.has(w)&&w.length>1).map(stem);}
+function buildIndex(docs){
+  const df={};
+  const tfs=docs.map(d=>{const tf={};toks(d.text).forEach(w=>{tf[w]=(tf[w]||0)+1});Object.keys(tf).forEach(w=>{df[w]=(df[w]||0)+1});return tf;});
+  const N=docs.length, idf=w=>Math.log(1+N/(df[w]||0.5));
+  const vecs=tfs.map(tf=>{const v={};let n=0;for(const w in tf){const x=(1+Math.log(tf[w]))*idf(w);v[w]=x;n+=x*x}n=Math.sqrt(n)||1;for(const w in v)v[w]/=n;return v;});
+  return {docs,vecs,idf,df,N};
+}
+function qvec(idx,text){const tf={};toks(text).forEach(w=>{tf[w]=(tf[w]||0)+1});const v={};let n=0;for(const w in tf){if(!idx.df[w])continue;const x=(1+Math.log(tf[w]))*idx.idf(w);v[w]=x;n+=x*x}n=Math.sqrt(n)||1;for(const w in v)v[w]/=n;return v;}
+function cosine(a,b){let s=0;for(const w in a)if(b[w])s+=a[w]*b[w];return s;}
+function searchIdx(idx,text,k=5){const q=qvec(idx,text);return idx.docs.map((d,i)=>({d,score:cosine(q,idx.vecs[i])})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,k);}
+
+const CHUNKS=[];
+PAPERS.forEach(p=>{
+  const add=(kind,text)=>CHUNKS.push({pid:p.id,kind,text,raw:text,idxText:p.title+' '+p.tags.join(' ')+' '+text});
+  add('summary',p.summary);add('method',p.method+' '+p.data);
+  p.findings.forEach(f=>add('finding',f));p.limits.forEach(l=>add('limitation',l));
+});
+CHUNKS.forEach(c=>c.text=c.idxText);
+const CIDX=buildIndex(CHUNKS);
+const PIDX=buildIndex(PAPERS.map(p=>({id:p.id,text:p.title+' '+p.tags.join(' ')+' '+p.summary+' '+p.method+' '+p.data+' '+p.findings.join(' ')+' '+p.limits.join(' ')})));
+const PROJECT_TOPIC='lightweight intrusion detection IoT network traffic few-shot anomaly tree ensemble classification';
+
+/* ================= Synthetic dataset + ML ================= */
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const FEATURES=['packet rate','mean packet size','flow duration','port entropy','SYN ratio','byte asymmetry'];
+const DATA_N=1600, DATA_ATTACK=0.35;
+let _ds=null;
+function dataset(){
+  if(_ds)return _ds;
+  const r=rng(2026),X=[],y=[];
+  const g=(m,s,lo=0)=>Math.max(lo,m+s*gauss(r));
+  for(let i=0;i<DATA_N;i++){
+    const atk=r()<DATA_ATTACK;
+    if(!atk){X.push([g(40,18),g(520,160,40),g(30,14,1),g(1.2,.5),g(.08,.05),g(.5,.18)]);y.push(0);}
+    else{
+      const u=r();
+      if(u<.6)X.push([g(190,60),g(120,60,40),g(8,5,1),g(.4,.3),g(.55,.2),g(.85,.1)]);
+      else if(u<.85)X.push([g(75,25),g(70,30,40),g(5,3,1),g(3.2,.6),g(.7,.15),g(.7,.15)]);
+      else X.push([g(55,20),g(450,150,40),g(26,12,1),g(1.6,.6),g(.15,.07),g(.58,.18)]);
+      y.push(1);
+    }
+  }
+  return _ds={X,y};
+}
+const MODELS={
+  lr:{name:'Logistic regression',lc:'logistic regression',defaults:{epochs:200,lr:.1}},
+  knn:{name:'k-nearest neighbours',lc:'k-nearest neighbours',defaults:{k:5}},
+  nb:{name:'Gaussian naive Bayes',lc:'Gaussian naive Bayes',defaults:{}},
+  dt:{name:'Decision tree',lc:'decision tree',defaults:{maxDepth:5}},
+  rf:{name:'Random forest',lc:'random forest',defaults:{trees:25,maxDepth:6}}
+};
+const MODEL_ALIAS={lr:/logistic regression/ig,knn:/k-?nearest neighbou?rs?|\bk-?nn\b/ig,nb:/(?:gaussian )?naive bayes/ig,dt:/decision trees?/ig,rf:/random forests?/ig};
+function buildTree(X,y,idx,o,rand,depth,imp){
+  const n=idx.length;let pos=0;for(const i of idx)pos+=y[i];
+  const p=pos/n;
+  if(depth>=o.maxDepth||n<2*o.minLeaf||pos===0||pos===n)return{leaf:true,p};
+  const d=X[0].length;let feats=[...Array(d).keys()];
+  if(o.mtry&&o.mtry<d){for(let i=feats.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[feats[i],feats[j]]=[feats[j],feats[i]];}feats=feats.slice(0,o.mtry);}
+  const gini=q=>2*q*(1-q),parent=gini(p);let best=null;
+  for(const f of feats){
+    const ord=idx.slice().sort((a,b)=>X[a][f]-X[b][f]);let lp=0;
+    for(let i=0;i<n-1;i++){
+      lp+=y[ord[i]];const nl=i+1,nr=n-nl;
+      if(nl<o.minLeaf||nr<o.minLeaf)continue;
+      const v1=X[ord[i]][f],v2=X[ord[i+1]][f];if(v1===v2)continue;
+      const gg=(nl*gini(lp/nl)+nr*gini((pos-lp)/nr))/n;
+      if(!best||gg<best.g)best={g:gg,f,t:(v1+v2)/2};
+    }
+  }
+  if(!best||parent-best.g<1e-9)return{leaf:true,p};
+  imp[best.f]+=(parent-best.g)*n;
+  const L=[],R=[];for(const i of idx)(X[i][best.f]<=best.t?L:R).push(i);
+  return{f:best.f,t:best.t,l:buildTree(X,y,L,o,rand,depth+1,imp),r:buildTree(X,y,R,o,rand,depth+1,imp)};
+}
+function predTree(nd,x){while(!nd.leaf)nd=x[nd.f]<=nd.t?nd.l:nd.r;return nd.p;}
+function runModel(model,params,seed,testFrac){
+  const D=dataset(),N=D.X.length,r=rng(seed);
+  const order=[...Array(N).keys()];for(let i=N-1;i>0;i--){const j=Math.floor(r()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+  const nTe=Math.round(N*testFrac),te=order.slice(0,nTe),tr=order.slice(nTe),d=FEATURES.length;
+  const mean=Array(d).fill(0),sd=Array(d).fill(0);
+  tr.forEach(i=>D.X[i].forEach((v,k)=>mean[k]+=v/tr.length));
+  tr.forEach(i=>D.X[i].forEach((v,k)=>sd[k]+=(v-mean[k])**2/tr.length));
+  for(let k=0;k<d;k++)sd[k]=Math.sqrt(sd[k])||1;
+  const Xs=D.X.map(x=>x.map((v,k)=>(v-mean[k])/sd[k])),y=D.y;
+  const Xtr=tr.map(i=>Xs[i]),ytr=tr.map(i=>y[i]),Xte=te.map(i=>Xs[i]),yte=te.map(i=>y[i]);
+  let P=[],loss=[],importance=null;
+  if(model==='lr'){
+    const w=Array(d).fill(0);let b=0;const ep=Math.max(10,Math.min(500,params.epochs|0)),lr=+params.lr||.1,l2=.001,n=Xtr.length;
+    for(let e=0;e<ep;e++){
+      const gw=Array(d).fill(0);let gb=0,L=0;
+      for(let i=0;i<n;i++){let z=b;for(let k=0;k<d;k++)z+=w[k]*Xtr[i][k];const p=1/(1+Math.exp(-z)),er=p-ytr[i];for(let k=0;k<d;k++)gw[k]+=er*Xtr[i][k];gb+=er;L-=ytr[i]*Math.log(p+1e-12)+(1-ytr[i])*Math.log(1-p+1e-12);}
+      for(let k=0;k<d;k++)w[k]-=lr*(gw[k]/n+l2*w[k]);b-=lr*gb/n;loss.push(L/n);
+    }
+    P=Xte.map(x=>{let z=b;for(let k=0;k<d;k++)z+=w[k]*x[k];return 1/(1+Math.exp(-z));});
+    const tot=w.reduce((s,v)=>s+Math.abs(v),0)||1;importance=FEATURES.map((nm,k)=>({name:nm,value:Math.abs(w[k])/tot}));
+  }else if(model==='knn'){
+    const k=Math.max(1,Math.min(51,params.k|0));
+    P=Xte.map(x=>{const ds=Xtr.map((t,i)=>{let s=0;for(let q=0;q<d;q++)s+=(t[q]-x[q])**2;return[s,ytr[i]];}).sort((a,b)=>a[0]-b[0]).slice(0,k);return ds.reduce((s,v)=>s+v[1],0)/k;});
+  }else if(model==='nb'){
+    const st=c=>{const rows=Xtr.filter((_,i)=>ytr[i]===c),m=Array(d).fill(0),v=Array(d).fill(0);rows.forEach(x=>x.forEach((q,k)=>m[k]+=q/rows.length));rows.forEach(x=>x.forEach((q,k)=>v[k]+=(q-m[k])**2/rows.length));return{m,v:v.map(q=>q+1e-6),pr:rows.length/Xtr.length};};
+    const s0=st(0),s1=st(1);
+    const ll=(s,x)=>{let l=Math.log(s.pr);for(let k=0;k<d;k++)l+=-.5*Math.log(2*Math.PI*s.v[k])-(x[k]-s.m[k])**2/(2*s.v[k]);return l;};
+    P=Xte.map(x=>1/(1+Math.exp(ll(s0,x)-ll(s1,x))));
+  }else if(model==='dt'||model==='rf'){
+    const imp=Array(d).fill(0),idx=[...Array(Xtr.length).keys()];
+    if(model==='dt'){
+      const t=buildTree(Xtr,ytr,idx,{maxDepth:Math.max(1,Math.min(14,params.maxDepth|0)),minLeaf:5},r,0,imp);
+      P=Xte.map(x=>predTree(t,x));
+    }else{
+      const T=Math.max(1,Math.min(100,params.trees|0)),trees=[];
+      for(let t=0;t<T;t++){const bs=idx.map(()=>Math.floor(r()*idx.length));trees.push(buildTree(Xtr,ytr,bs,{maxDepth:Math.max(1,Math.min(14,params.maxDepth|0)),minLeaf:3,mtry:3},r,0,imp));}
+      P=Xte.map(x=>trees.reduce((s,t)=>s+predTree(t,x),0)/T);
+    }
+    const tot=imp.reduce((s,v)=>s+v,0)||1;importance=FEATURES.map((nm,k)=>({name:nm,value:imp[k]/tot}));
+  }
+  let tp=0,fp=0,tn=0,fn=0;
+  P.forEach((p,i)=>{const h=p>=.5?1:0;if(h&&yte[i])tp++;else if(h)fp++;else if(yte[i])fn++;else tn++;});
+  const acc=(tp+tn)/P.length,prec=tp+fp?tp/(tp+fp):0,rec=tp+fn?tp/(tp+fn):0,f1=prec+rec?2*prec*rec/(prec+rec):0;
+  return{metrics:{acc,prec,rec,f1},cm:{tp,fp,tn,fn},loss,importance,nTrain:tr.length,nTest:te.length};
+}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return(h>>>0).toString(16).padStart(8,'0');}
+function makeRun(runs,model,params,seed,testFrac){
+  const res=runModel(model,params,seed,testFrac);
+  const id='R-'+String(runs.length+1).padStart(3,'0');
+  return Object.assign({id,model,params:Object.assign({},params),seed,testFrac,ts:Date.now(),rec:hash(model+JSON.stringify(params)+seed+testFrac+JSON.stringify(res.metrics))},res);
+}
+function latestByModel(runs){const m={};runs.forEach(r=>{m[r.model]=r;});return m;}
+
+/* ================= Integrity & Novelty engine ================= */
+function sentencesOf(text){return text.split(/(?<=[.!?])\s+(?=[A-Z0-9"(\[])|\n+/).map(s=>s.trim()).filter(Boolean);}
+const words=t=>(String(t).toLowerCase().match(/[a-z0-9]+/g)||[]);
+function shingles(ws,n=3){const s=new Set();for(let i=0;i+n<=ws.length;i++)s.add(ws.slice(i,i+n).join(' '));return s;}
+const CHUNK_SH=CHUNKS.map(c=>shingles(words(c.raw)));
+const SURNAMES=Object.fromEntries(PAPERS.map(p=>[p.a.toLowerCase(),[]]));
+PAPERS.forEach(p=>SURNAMES[p.a.toLowerCase()].push(p));
+const METRIC_KEY=m=>{m=m.toLowerCase();return m.startsWith('acc')?'acc':m.startsWith('prec')?'prec':m.startsWith('rec')?'rec':'f1';};
+const METRIC_LABEL={acc:'accuracy',prec:'precision',rec:'recall',f1:'F1'};
+const CONTRIB_RE=/\b(we (?:propose|present|introduce|contribute)|our (?:main |key )?contributions?|(?:main|key) contributions?|contributions? (?:of this|are|is)|this (?:paper|work|study) (?:proposes|presents|introduces))\b/i;
+const sevRank={high:0,medium:1,low:2};
+function wc(t){return(t.match(/\S+/g)||[]).length;}
+
+function claimsOf(text){
+  const out=[];
+  for(const sent of sentencesOf(text)){
+    const mentions=[];
+    for(const k in MODEL_ALIAS){const re=new RegExp(MODEL_ALIAS[k].source,'ig');let m;while((m=re.exec(sent)))mentions.push({k,i:m.index});}
+    if(!mentions.length)continue;
+    const spans=[],found=[];
+    const A=/\b(accuracy|precision|recall|f1(?:[-\s]score)?|f-measure)\b(?:\s+(?:of|was|is|at|reached|achieved|score|about|around|approximately))*\s*[:=]?\s*(\d{1,3}(?:\.\d+)?)(\s*%)?/gi;
+    let m;
+    while((m=A.exec(sent))){const ns=m.index+m[0].indexOf(m[2],m[1].length);found.push({metric:METRIC_KEY(m[1]),num:m[2],pct:!!m[3],start:ns,end:ns+m[2].length});spans.push([m.index,m.index+m[0].length]);}
+    const B=/(\d{1,3}(?:\.\d+)?)(\s*%)?\s+(accuracy|precision|recall|f1(?:[-\s]score)?|f-measure)\b/gi;
+    while((m=B.exec(sent))){const s0=m.index,e0=m.index+m[0].length;if(spans.some(([a,b])=>s0<b&&e0>a))continue;found.push({metric:METRIC_KEY(m[3]),num:m[1],pct:!!m[2],start:s0,end:s0+m[1].length});}
+    for(const f of found){
+      let v=parseFloat(f.num);if(!f.pct&&v<=1)v*=100;else if(!f.pct&&v>1&&v<=100){/* bare number above 1 treated as percent */}
+      if(v<0||v>100)continue;
+      let near=null;for(const mt of mentions){if(mt.i<=f.start)near=mt;}if(!near)near=mentions[0];
+      const dec=(f.num.split('.')[1]||'').length;
+      out.push({sentence:sent,model:near.k,metric:f.metric,num:f.num,pct:f.pct,value:v,start:f.start,end:f.end,dec});
+    }
+  }
+  return out;
+}
+function parseCites(text){
+  const res=[];
+  const groups=text.match(/\([^()]*\d{4}[^()]*\)/g)||[];
+  for(const g of groups){
+    const inner=g.slice(1,-1).split(';');
+    for(const part of inner){
+      const m=part.trim().match(/^([A-Z][A-Za-z\-]+)(?:\s+et al\.?|\s+(?:and|&)\s+[A-Z][A-Za-z\-]+)?,?\s+(\d{4})[a-z]?$/);
+      if(m)res.push({full:g,part:part.trim(),surname:m[1],year:+m[2]});
+    }
+  }
+  return res;
+}
+function insertBeforeMethod(text,para){
+  const i=text.search(/^(?:2\.\s|Method|Methods|Related Work)/m);
+  if(i<0)return text.replace(/\s+$/,'')+'\n\n'+para+'\n';
+  return text.slice(0,i)+para+'\n\n'+text.slice(i);
+}
+function analyze(text,runs,acks){
+  acks=acks||{};
+  const findings=[],sents=sentencesOf(text);
+  const latest=latestByModel(runs);
+
+  /* similarity */
+  const simHits=[];
+  sents.forEach(s=>{
+    const ws=words(s);if(ws.length<8)return;
+    const sh=shingles(ws);if(!sh.size)return;
+    let best={score:0,ci:-1};
+    CHUNK_SH.forEach((cs,ci)=>{let c=0;sh.forEach(g=>{if(cs.has(g))c++;});const sc=c/sh.size;if(sc>best.score)best={score:sc,ci};});
+    if(best.score>=.3){
+      const ch=CHUNKS[best.ci],p=PBY[ch.pid];
+      const attributed=new RegExp('\\b'+p.a+'\\b','i').test(s);
+      simHits.push({sentence:s,score:best.score,paper:p,attributed,chunk:ch.raw});
+    }
+  });
+  simHits.forEach(h=>{
+    const pct=Math.round(h.score*100);
+    if(h.attributed){
+      findings.push({id:'sim-att:'+hash(h.sentence),cat:'Similarity',sev:'low',title:'Close wording to '+citeOf(h.paper)+' ('+pct+'% overlap)',detail:'The source is cited, but the phrasing stays close to it. Paraphrase it further or put it in quotation marks.',quote:h.sentence,pen:3});
+    }else{
+      findings.push({id:'sim:'+hash(h.sentence),cat:'Similarity',sev:h.score>=.5?'high':'medium',title:'Text overlaps '+citeOf(h.paper)+' without a citation ('+pct+'% overlap)',detail:'This sentence matches a passage in the indexed library. Add a citation, and consider rewriting it in your own words.',quote:h.sentence,pen:h.score>=.5?25:12,
+        fix:{label:'Add citation '+citeOf(h.paper),apply:t=>t.replace(h.sentence,h.sentence.replace(/([.!?])\s*$/,' ('+citeOf(h.paper)+')$1'))}});
+    }
+  });
+
+  /* citations */
+  const cites=parseCites(text),seen=new Set();let verified=0;const citedIds=new Set();
+  cites.forEach(c=>{
+    const key=c.surname+c.year+c.full;if(seen.has(key))return;seen.add(key);
+    const cand=SURNAMES[c.surname.toLowerCase()];
+    if(cand){
+      const exact=cand.find(p=>p.year===c.year);
+      if(exact){verified++;citedIds.add(exact.id);return;}
+      const p=cand[0];
+      findings.push({id:'cite-year:'+c.surname+':'+c.year,cat:'Citation accuracy',sev:'medium',title:'Year looks wrong for '+c.surname+' ('+c.year+')',detail:'The indexed record for '+p.title+' gives '+p.year+', not '+c.year+'.',quote:c.part,pen:15,
+        fix:{label:'Change year to '+p.year,apply:t=>t.replace(c.full,c.full.replace(String(c.year),String(p.year)))}});
+      citedIds.add(p.id);
+    }else{
+      const id='cite-unv:'+c.surname+':'+c.year;
+      if(acks[id]){verified++;return;}
+      findings.push({id,cat:'Citation accuracy',sev:'medium',title:'Cannot verify '+c.surname+' ('+c.year+')',detail:'No matching record in the 16-paper prototype corpus. Check the spelling and year against the publisher or DOI page, then confirm it here.',quote:c.part,pen:20,ack:'I checked this reference'});
+    }
+  });
+
+  /* contribution */
+  const hasContrib=CONTRIB_RE.test(text);
+  const best=Object.values(latest).sort((a,b)=>b.metrics.f1-a.metrics.f1)[0];
+  if(!hasContrib){
+    findings.push({id:'contrib',cat:'Research contribution',sev:'medium',title:'No explicit contribution statement',detail:'Reviewers look for a clear statement of what the paper adds. The suggested paragraph is built only from your recorded experiments, so edit it to match your claims.',pen:0,
+      fix:runs.length?{label:'Insert contribution paragraph',apply:t=>{
+        const ms=Object.values(latest).map(r=>MODELS[r.model].lc);
+        const para='The main contributions of this work are: (1) a reproducible comparison of '+ms.length+' lightweight classifiers ('+ms.join(', ')+') on labelled flow features; and (2) results reported directly from recorded experiment runs, where the best model, '+MODELS[best.model].lc+', reaches an F1 of '+best.metrics.f1.toFixed(2)+'.';
+        return insertBeforeMethod(t,para);}}:null,
+      go:runs.length?null:'experiments'});
+  }
+
+  /* novelty */
+  let ntext=text;simHits.forEach(h=>{ntext=ntext.replace(h.sentence,' ');});
+  const tv=qvec(PIDX,ntext);let closest=null,maxcos=0;
+  PAPERS.forEach((p,i)=>{const c=cosine(tv,PIDX.vecs[i]);if(c>maxcos){maxcos=c;closest=p;}});
+  let diff=false;
+  if(closest)diff=new RegExp('(unlike|in contrast to|differs? from|compared (?:with|to)|whereas)[^.]{0,120}\\b'+closest.a+'\\b','i').test(text);
+  let novelty=Math.max(0,Math.min(100,Math.round(100*(1-maxcos*1.1))));
+  if(diff)novelty=Math.min(100,novelty+10);
+  if(closest&&maxcos>=.12&&!diff){
+    findings.push({id:'novelty',cat:'Novelty',sev:'medium',title:'No explicit comparison with the closest prior work',detail:'The closest indexed paper is '+citeOf(closest)+' ('+closest.title+'). State how your work differs from it. Check that the inserted sentence describes your method accurately.',pen:0,
+      fix:{label:'Insert comparison sentence',apply:t=>insertBeforeMethod(t,'In contrast to '+citeOf(closest).replace(', ',' (').replace(/$/,')')+', which '+closest.short+', this work evaluates lightweight supervised classifiers on labelled flow features and reports every figure from recorded experiment runs.')}});
+  }
+
+  /* consistency */
+  const claims=claimsOf(text);let consBad=0;
+  claims.forEach(c=>{
+    const run=latest[c.model];
+    if(!run){
+      consBad++;
+      findings.push({id:'cons-none:'+c.model+':'+c.metric,cat:'Results consistency',sev:'high',title:'No experiment record for '+MODELS[c.model].lc,detail:'The draft reports '+METRIC_LABEL[c.metric]+' for this model, but no run exists in your experiment log.',quote:c.sentence,pen:0,go:'experiments'});
+      return;
+    }
+    const rec=run.metrics[c.metric]*100,tol=.5*Math.pow(10,-c.dec)*(c.pct?1:100)+.01;
+    if(Math.abs(c.value-rec)>tol){
+      consBad++;
+      const fmt=c.pct?rec.toFixed(Math.max(1,c.dec))+'%':(rec/100).toFixed(Math.max(2,c.dec)),old=c.num+(c.pct?'%':'');
+      findings.push({id:'cons:'+c.model+':'+c.metric+':'+c.num,cat:'Results consistency',sev:'high',title:MODELS[c.model].name+' '+METRIC_LABEL[c.metric]+' does not match the record',detail:'The draft says '+old+'. Run '+run.id+' recorded '+fmt+'.',quote:c.sentence,pen:0,
+        fix:{label:'Use recorded value '+fmt,apply:t=>{const s=c.sentence;const ns=s.slice(0,c.start)+(c.pct?rec.toFixed(Math.max(1,c.dec)):(rec/100).toFixed(Math.max(2,c.dec)))+s.slice(c.end);return t.replace(s,ns);}}});
+    }
+  });
+
+  /* ranking claims */
+  const RANK=/(decision trees?|random forests?|logistic regression|k-?nearest neighbou?rs?|\bk-?nn\b|(?:gaussian )?naive bayes)(?:\s+classifier)?\s+(?:outperforms?|outperformed|beats?|is the best|performs? best)/i;
+  sents.forEach(sent=>{
+    const m=sent.match(RANK);if(!m||!/\b(other|all|every)\b/i.test(sent))return;
+    let k=null;for(const kk in MODEL_ALIAS){if(new RegExp(MODEL_ALIAS[kk].source,'i').test(m[1])){k=kk;break;}}
+    if(!k||!latest[k]||Object.keys(latest).length<2)return;
+    const top=Object.entries(latest).sort((a,b)=>b[1].metrics.f1-a[1].metrics.f1)[0];
+    if(top[0]===k)return;
+    consBad++;
+    const bestName=MODELS[top[0]].lc;
+    findings.push({id:'rank:'+k+':'+hash(sent),cat:'Results consistency',sev:'high',title:'Ranking claim is not supported by the records',detail:'The draft says the '+MODELS[k].lc+' outperforms the other models. By F1, the records rank the '+bestName+' first ('+top[1].metrics.f1.toFixed(2)+') and the '+MODELS[k].lc+' at '+latest[k].metrics.f1.toFixed(2)+'.',quote:sent,pen:0,
+      fix:{label:'Name the '+bestName+' instead',apply:t=>t.replace(sent,sent.replace(new RegExp(MODEL_ALIAS[k].source,'i'),bestName))}});
+  });
+
+  /* uncited library papers (info) */
+  /* scores */
+  const simPen=findings.filter(f=>f.cat==='Similarity').reduce((s,f)=>s+f.pen,0);
+  const citePen=findings.filter(f=>f.cat==='Citation accuracy').reduce((s,f)=>s+f.pen,0);
+  const mism=findings.filter(f=>f.cat==='Results consistency').length;
+  const scores={
+    orig:Math.max(0,100-simPen),
+    nov:novelty,
+    cite:Math.max(0,100-citePen),
+    contrib:hasContrib?100:35,
+    cons:claims.length?Math.max(0,100-Math.min(100,mism*30)):70
+  };
+  const W={orig:.25,nov:.2,cite:.2,contrib:.15,cons:.2};
+  const overall=Math.round(Object.keys(W).reduce((s,k)=>s+scores[k]*W[k],0));
+  findings.sort((a,b)=>sevRank[a.sev]-sevRank[b.sev]);
+  const counts={high:0,medium:0,low:0};findings.forEach(f=>counts[f.sev]++);
+  return{findings,scores,overall,counts,closest,maxcos,claims,cites:{total:seen.size,verified},simHits,hasContrib,diff,label:overall>=85?'Ready to prepare':overall>=65?'Needs revision':'Not ready'};
+}
+function fixAll(text,runs,acks){
+  const tried=new Set();let applied=0;
+  for(let i=0;i<14;i++){
+    const a=analyze(text,runs,acks);const f=a.findings.find(x=>x.fix&&!tried.has(x.id));
+    if(!f)break;tried.add(f.id);const nt=f.fix.apply(text);if(nt!==text){text=nt;applied++;}
+  }
+  return{text,applied};
+}
+function sampleManuscript(runs){
+  const L=latestByModel(runs),pc=x=>(x*100).toFixed(1);
+  const dt=L.dt,rf=L.rf,lr=L.lr;
+  const dtAcc=Math.min(99.9,dt.metrics.acc*100+4.1).toFixed(1),dtF1=Math.min(.99,dt.metrics.f1+.04).toFixed(2);
+  return 'Lightweight Flow-Based Intrusion Detection for IoT Networks\n\n'+
+'Abstract\n'+
+'Internet-connected devices are frequent targets of flooding and scanning attacks. This paper compares five lightweight classifiers on labelled flow features and reports detection accuracy, precision, recall and F1. The decision tree classifier achieved an accuracy of '+dtAcc+'% and an F1 of '+dtF1+', while the random forest reached '+pc(rf.metrics.acc)+'% accuracy.\n\n'+
+'1. Introduction\n'+
+PBY.breiman2001.summary+' IoT networks carry heterogeneous traffic, and attacks such as floods and port scans leave visible traces in flow statistics. Unsupervised detectors such as Kitsune (Mirsky et al., 2019) run online on low-cost hardware, but they need a threshold tuned for each deployment. Isolation-based methods (Liu et al., 2008) are fast, and language model assistants have also been proposed for alert triage (Zhang et al., 2022).\n\n'+
+'2. Method\n'+
+'We generate '+DATA_N.toLocaleString('en-US')+' synthetic flow records with six features: packet rate, mean packet size, flow duration, destination-port entropy, SYN ratio and byte asymmetry. Features are standardised using training-set statistics. We train logistic regression, k-nearest neighbours, Gaussian naive Bayes, a decision tree and a random forest, and evaluate each on a held-out split.\n\n'+
+'3. Results\n'+
+'Logistic regression reached an accuracy of '+pc(lr.metrics.acc)+'%. The decision tree outperforms the other models on this dataset, and ensembling further stabilises its predictions.\n';
+}
+
+/* ================= Venues ================= */
+const VENUES=[
+{id:'iotj',name:'IEEE Internet of Things Journal',type:'Journal',pub:'IEEE',kw:['iot','internet of things','edge','sensor','network','intrusion','detection','lightweight','security','traffic','device'],tpl:'IEEE journal template (two-column, Word or LaTeX).',notes:['Check the journal’s current page limit and any open-access or overlength fees.','Expect reviewers to ask for evaluation on real device traffic or a public dataset.']},
+{id:'cs',name:'Computers & Security',type:'Journal',pub:'Elsevier',kw:['security','intrusion','detection','attack','malware','privacy','network','classification','anomaly','threat'],tpl:'Elsevier article template; many Elsevier journals also ask for highlights.',notes:['Confirm whether a graphical abstract or highlights are required.','Strong fit for detection work with a clear threat model.']},
+{id:'jnca',name:'Journal of Network and Computer Applications',type:'Journal',pub:'Elsevier',kw:['network','traffic','iot','detection','distributed','edge','security','classification','lightweight','flow'],tpl:'Elsevier article template.',notes:['Applications-oriented: show deployment cost, such as model size or inference time.']},
+{id:'tifs',name:'IEEE Transactions on Information Forensics and Security',type:'Journal',pub:'IEEE',kw:['security','privacy','forensics','intrusion','attack','detection','adversarial','authentication','anomaly'],tpl:'IEEE Transactions template (Word or LaTeX).',notes:['Typically expects a rigorous threat model and stronger baselines than a first draft.']},
+{id:'access',name:'IEEE Access',type:'Journal',pub:'IEEE',kw:['network','detection','machine learning','classification','iot','security','traffic','anomaly','evaluation','dataset'],tpl:'IEEE Access template (single submission file, Word or LaTeX).',notes:['Open-access venue with a broad scope; confirm the article processing charge before submitting.']},
+{id:'sensors',name:'Sensors',type:'Journal',pub:'MDPI',kw:['sensor','iot','device','network','detection','edge','lightweight','traffic','classification','monitoring'],tpl:'MDPI template (Word or LaTeX).',notes:['Open-access venue; check the article processing charge and special issues on IoT security.']},
+{id:'ccs',name:'ACM CCS',type:'Conference',pub:'ACM',kw:['security','attack','privacy','intrusion','adversarial','malware','threat','detection'],tpl:'ACM acmart (sigconf) LaTeX template.',notes:['Highly selective; usually expects a new technique with a thorough security evaluation.']},
+{id:'ndss',name:'NDSS Symposium',type:'Conference',pub:'Internet Society',kw:['network','security','intrusion','detection','attack','iot','traffic','anomaly','privacy'],tpl:'NDSS LaTeX template.',notes:['Selective; Kitsune appeared here, so reviewers will know the baseline well.']}
+];
+function venueFit(v,text){
+  const tk=new Set(toks(text));const stemmed=v.kw.map(k=>toks(k));
+  let hit=0;stemmed.forEach(ws=>{if(ws.length&&ws.every(w=>tk.has(w)))hit++;});
+  return Math.round(100*hit/v.kw.length);
+}
+
+/* ================= UI core ================= */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ICONS={
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ chat:'<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
+ flask:'<path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2.2h12.4a1.5 1.5 0 0 0 1.3-2.2L14 9V3"/><path d="M7.5 15h9"/>',
+ shield:'<path d="M12 3l8 3v6c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+ grid:'<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
+ send:'<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
+ check:'<path d="m5 12 5 5L20 7"/>',
+ x:'<path d="M6 6l12 12M18 6 6 18"/>',
+ ext:'<path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+ copy:'<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+ bookmark:'<path d="M6 3h12v18l-6-4-6 4z"/>',
+ moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>',
+ arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ upload:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',
+ home:'<path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+};
+const icon=(n,s=18)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+const logo=(s=32)=>`<svg class="logo" width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true"><use href="#iris-mark"/></svg>`;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2800);}
+async function copyText(str){
+  try{await navigator.clipboard.writeText(str);toast('Copied to clipboard');}
+  catch(e){const ta=document.createElement('textarea');ta.value=str;ta.style.cssText='position:fixed;opacity:0;top:0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(_){}ta.remove();toast(ok?'Copied to clipboard':'Copy was blocked. Select the text and copy it manually.');}
+}
+const pct=(x,d=1)=>(x*100).toFixed(d)+'%';
+const stamp=ts=>{const d=new Date(ts);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+', '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});};
+const primaryLink=id=>{const L=linksOf(PBY[id]);return L.length?L[0].url:'#';};
+function ring(score,size=104){
+  const r=40,c=2*Math.PI*r,col=score>=85?'var(--good)':score>=65?'var(--warn)':'var(--bad)';
+  return `<div class="ring" style="width:${size}px;height:${size}px"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="${r}" fill="none" stroke-width="9"/><circle cx="50" cy="50" r="${r}" fill="none" stroke-width="9" stroke-linecap="round" stroke="${col}" stroke-dasharray="${(c*score/100).toFixed(1)} ${c.toFixed(1)}"/></svg><div class="num">${score}</div></div>`;
+}
+const scoreColor=v=>v>=85?'var(--good)':v>=65?'var(--warn)':'var(--bad)';
+const sevPill=s=>`<span class="pill ${s==='high'?'bad':s==='medium'?'warn':''}">${s==='high'?'High':s==='medium'?'Medium':'Low'}</span>`;
+
+/* ================= State ================= */
+const KEY='iris-proto-v3',DEFAULT_LIB=['mirsky2018','sharafaldin2018','breiman2001','liu2008','snell2017','mcmahan2017'];
+let S=null,USER=null;
+const stateKey=()=>KEY+':'+(USER?USER.email:'guest');
+function log(s,text){s.activity.unshift({ts:Date.now(),text});if(s.activity.length>30)s.activity.length=30;}
+function freshState(){
+  const s={v:3,library:DEFAULT_LIB.slice(),context:DEFAULT_LIB.slice(),useRecords:true,chat:[],queries:0,gapsRun:false,direction:null,runs:[],manuscript:'',integ:{stage:'idle',baseline:null,snap:null},fixes:0,acks:{},venue:null,checks:{},activity:[]};
+  Object.keys(MODELS).forEach(k=>s.runs.push(makeRun(s.runs,k,MODELS[k].defaults,42,.25)));
+  s.manuscript=sampleManuscript(s.runs);
+  log(s,'Sample project opened with 6 saved papers and 5 recorded experiment runs');
+  return s;
+}
+function loadState(){try{const j=localStorage.getItem(stateKey());if(j){const s=JSON.parse(j);if(s&&s.v===3&&Array.isArray(s.runs)&&s.runs.length&&typeof s.manuscript==='string')return s;}}catch(e){}return freshState();}
+let _st;function save(){clearTimeout(_st);_st=setTimeout(()=>{if(!S||!USER)return;try{localStorage.setItem(stateKey(),JSON.stringify(S));}catch(e){}},300);}
+const UI={model:'rf',params:Object.assign({},MODELS.rf.defaults),seed:42,test:.25,sel:null,q:'',kind:'All',saved:false,venueView:null,draft:{}};
+let _live=null;
+const curHash=()=>hash(S.manuscript+JSON.stringify(S.acks));
+function live(){const k=curHash()+':'+S.runs.length;if(_live&&_live.k===k)return _live.a;const a=analyze(S.manuscript,S.runs,S.acks);_live={k,a};return a;}
+function snapshotOf(a){return{overall:a.overall,scores:a.scores,counts:a.counts,label:a.label,hash:curHash(),ts:Date.now()};}
+
+/* ================= Router ================= */
+const ROUTES=['home','auth','dashboard','discover','copilot','experiments','integrity','publish','profile'];
+const APP_ROUTES=['dashboard','discover','copilot','experiments','integrity','publish','profile'];
+let cur='home',lastRoute=null;
+const AUTH={mode:'signin',step:'form',email:'',name:'',code:null,exp:0,tries:0,resendAt:0,err:'',pending:null,timer:null};
+function guard(r){if(APP_ROUTES.includes(r)&&!USER){AUTH.pending=r;AUTH.step='form';return 'auth';}if(r==='auth'&&USER)return 'dashboard';return r;}
+function go(r){r=guard(r);cur=r;try{if(location.hash!=='#'+r)location.hash=r;}catch(e){}render();}
+window.addEventListener('hashchange',()=>{const h=location.hash.replace('#','');if(ROUTES.includes(h)){const g=guard(h);if(g!==cur){cur=g;render();}}});
+const isDark=()=>{const t=document.documentElement.getAttribute('data-theme');return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;};
+function toggleTheme(){const n=isDark()?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('iris-theme',n);}catch(e){}render();}
+const themeBtn=()=>`<button class="btn ghost sm" data-theme-toggle aria-label="Switch to ${isDark()?'light':'dark'} theme">${icon(isDark()?'sun':'moon')}</button>`;
+
+const NAV=[['Workspace',[['dashboard','Dashboard','grid']]],['Explore',[['discover','Discover papers','search'],['copilot','Research Copilot','chat']]],['Build',[['experiments','Experiment Engine','flask']]],['Validate',[['integrity','Integrity & Novelty','shield'],['publish','Publish','upload']]],['Account',[['profile','Profile','user']]]];
+function shell(){
+  return `<div class="shell"><aside class="rail"><a class="brand" href="#home" data-go="home" aria-label="IRIS home">${logo(30)}<span class="brand-name">IRIS</span></a>
+  <nav class="nav" aria-label="Workspace">${NAV.map(([g,items])=>`<h6>${g}</h6>${items.map(([r,l,ic])=>`<button data-go="${r}" class="${cur===r?'on':''}" ${cur===r?'aria-current="page"':''}>${icon(ic)}<span>${l}</span></button>`).join('')}`).join('')}</nav>
+  <div class="rail-foot"><div class="rail-proj"><span class="faint">Sample project</span><b>Lightweight Intrusion Detection for IoT Traffic</b></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" data-go="home">${icon('home',15)} Site</button>${themeBtn()}<button class="btn sm ghost" data-reset title="Reset the sample project">${icon('reset',15)} Reset</button></div>
+  <div class="rail-user"><span class="avatar" aria-hidden="true">${initials(USER.name)}</span><span class="who"><b>${esc(USER.name)}</b><small>${esc(USER.email)}</small></span><button class="btn ghost sm" data-signout aria-label="Sign out" title="Sign out">${icon('x',15)}</button></div></div></aside>
+  <main class="main" id="view"></main></div>`;
+}
+const PAGES={};
+function mount(){const old=$('#view');if(!old)return;const el=old.cloneNode(false);old.replaceWith(el);if(PAGES[cur])PAGES[cur](el);}
+function render(){
+  const app=$('#app');
+  if(cur==='home')app.innerHTML=landing();
+  else if(cur==='auth'){app.innerHTML=authPage();bindAuth();}
+  else{app.innerHTML=shell();mount();}
+  if(lastRoute!==cur)window.scrollTo(0,0);
+  lastRoute=cur;
+}
+function renderPage(){mount();}
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go);return;}
+  const sc=e.target.closest('[data-scroll]');if(sc){const t=document.getElementById(sc.dataset.scroll);if(t)t.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  const au=e.target.closest('[data-auth]');if(au){AUTH.mode=au.dataset.auth;AUTH.step='form';AUTH.err='';go('auth');return;}
+  if(e.target.closest('[data-signout]')){signOut();return;}
+  if(e.target.closest('[data-theme-toggle]')){toggleTheme();return;}
+  if(e.target.closest('[data-reset]')){S=freshState();UI.sel=null;UI.draft={};save();render();toast('Sample project reset');}
+});
+
+/* ================= Landing ================= */
+let _demo=null;
+function heroDemo(){
+  if(_demo)return _demo;
+  const runs=[];Object.keys(MODELS).forEach(k=>runs.push(makeRun(runs,k,MODELS[k].defaults,42,.25)));
+  const base=sampleManuscript(runs),a0=analyze(base,runs,{}),fx=fixAll(base,runs,{}),a1=analyze(fx.text,runs,{});
+  return _demo={a0,a1,applied:fx.applied};
+}
+const STAGE_GROUPS=[
+ ['Explore',[['Discover','Find papers and open them at the publisher, DOI or repository.'],['Understand','Ask the Copilot about concepts, methods and findings, with sources.'],['Analyze','Compare methodologies and extract findings across papers.'],['Innovate','Turn research gaps into a direction you can test.']]],
+ ['Build',[['Experiment','Train models in the Experiment Engine with fixed seeds.'],['Evaluate','Compare runs on accuracy, precision, recall and F1.'],['Develop','Refine the strongest approach through repeated runs.'],['Write','Draft the manuscript next to the records that back it.']]],
+ ['Validate',[['Validate','Check similarity, novelty, citations and reported results.'],['Rectify','Apply fixes for citations, numbers and missing statements.'],['Revalidate','Re-run every check and see what changed.'],['Publish','Choose a venue, follow its format and finish the checklist.']]]
+];
+function landing(){
+  const d=heroDemo(),top=d.a0.findings.slice(0,3);
+  let n=0;
+  return `<header class="site-head"><div class="wrap bar"><a class="brand" href="#home" data-go="home">${logo(34)}<span class="brand-name">IRIS</span></a>
+  <nav class="site-nav" aria-label="Sections"><button data-scroll="workflow">Workflow</button><button data-scroll="features">Capabilities</button><button data-scroll="integrity-sec">Integrity engine</button></nav>
+  <div class="bar-actions">${themeBtn()}${USER?`<button class="btn primary" data-go="dashboard">Open workspace ${icon('arrow',16)}</button>`:`<button class="btn ghost" data-auth="signin">Sign in</button><button class="btn primary" data-auth="signup">Sign up</button>`}</div></div></header>
+  <section class="hero"><div class="wrap hero-grid"><div>
+    <div class="tag">${logo(40)}<span class="eyebrow">Intelligent Research &amp; Innovation System</span></div>
+    <h1>From research idea to <em><span style="white-space:nowrap">publication-ready</span></em> outcome.</h1>
+    <p class="lead">IRIS guides students and researchers through the whole research lifecycle: finding papers, understanding them, running experiments, checking the manuscript against the evidence, and preparing it for a journal or conference.</p>
+    <div class="cta">${USER?`<button class="btn primary" data-go="dashboard">Open the sample project ${icon('arrow',16)}</button>`:`<button class="btn primary" data-auth="signup">Get started ${icon('arrow',16)}</button>`}<button class="btn" data-scroll="workflow">See the workflow</button></div></div>
+    <div class="card demo" aria-label="Integrity check on a sample draft">
+      <div class="demo-top"><b>Integrity check on a sample draft</b><span class="pill accent">Computed in your browser</span></div>
+      <div class="demo-scores"><div class="demo-score">${ring(d.a0.overall,92)}<span>Detected</span></div><span class="arrow">${icon('arrow',22)}</span><div class="demo-score">${ring(d.a1.overall,92)}<span>After ${d.applied} fixes</span></div></div>
+      <div class="demo-lines">${top.map(f=>`<div class="demo-line">${sevPill(f.sev)}<span>${esc(f.title)}</span></div>`).join('')}</div>
+      <p class="muted" style="font-size:13px;margin-top:12px">Detect, rectify, revalidate. Every figure in the draft is compared with a recorded experiment run.</p></div></div></section>
+
+  <section class="block alt" id="workflow"><div class="wrap"><div class="sec-head"><span class="eyebrow">Core workflow</span><h2>Twelve stages, one continuous workspace.</h2><p class="muted">Each stage hands its output to the next, so the paper you write stays tied to the papers you read and the experiments you ran.</p></div>
+    <div class="phases">${STAGE_GROUPS.map(([g,items])=>`<div class="card phase"><h3>${g}</h3><ol>${items.map(([t,d2])=>`<li><span class="n">${String(++n).padStart(2,'0')}</span><div><b>${t}</b><span>${d2}</span></div></li>`).join('')}</ol></div>`).join('')}</div></div></section>
+
+  <section class="block" id="features"><div class="wrap"><div class="sec-head"><span class="eyebrow">Capabilities</span><h2>Four tools that share one project record.</h2></div>
+    <div class="features">
+    ${[['search','Paper discovery with verified links','Search a paper library and open each result at its publisher, DOI or repository page. Save what matters to your project.','discover','Discover papers'],
+       ['chat','Research Copilot','Ask about concepts, compare methods and look for research gaps. Answers use your saved papers and your experiment results, and show the source of each claim.','copilot','Ask the Copilot'],
+       ['flask','Experiment Engine','Train and compare models with fixed seeds. Every run is recorded with its settings and metrics, so any number in your paper can be traced back.','experiments','Run an experiment'],
+       ['shield','Integrity & Novelty Engine','Checks text similarity, novelty against prior work, citation accuracy, the research contribution, and whether the numbers in your draft match your experiment records.','integrity','Check a draft']
+      ].map(([ic,t,d2,r,b])=>`<article class="card feature"><div class="icbox">${icon(ic,20)}</div><h3>${t}</h3><p>${d2}</p><button class="btn" data-go="${r}">${b} ${icon('arrow',15)}</button></article>`).join('')}
+    </div></div></section>
+
+  <section class="block alt" id="integrity-sec"><div class="wrap"><div class="sec-head"><span class="eyebrow">Research Integrity &amp; Novelty Engine</span><h2>It finds problems, then helps you fix them.</h2><p class="muted">Most checkers stop at a report. IRIS applies corrections you approve and runs every check again to confirm they worked.</p></div>
+    <div class="dra">${[['Detect','Step one','Scans the draft for text that matches the library, citations that do not check out, a missing contribution statement, and results that disagree with your records.'],['Rectify','Step two','Offers a specific fix for each issue: correct a year, add a missing citation, replace a number with the recorded value, or insert a missing statement.'],['Revalidate','Step three','Runs all checks again and shows the score before and after, so you can see what is resolved and what still needs your judgement.']].map(([t,k,d2])=>`<div class="card step"><span class="k">${k}</span><h3>${t}</h3><p>${d2}</p></div>`).join('')}</div></div></section>
+
+  <section class="block"><div class="wrap"><div class="card cta-band"><h2>IRIS helps you test and validate research before you submit it.</h2>${USER?`<button class="btn primary" data-go="dashboard">Open workspace ${icon('arrow',16)}</button>`:`<button class="btn primary" data-auth="signup">Create your account ${icon('arrow',16)}</button>`}</div></div></section>
+  <footer class="site-foot"><div class="wrap row"><span class="brand">${logo(24)}<span class="brand-name" style="font-size:20px">IRIS</span></span><span>Prototype build. Papers, summaries and the dataset are samples for demonstration. Verify every source at its original link.</span></div></footer>`;
+}
+
+/* ================= Dashboard ================= */
+function stageList(){
+  const counts={};S.runs.forEach(r=>{counts[r.model]=(counts[r.model]||0)+1;});
+  const models=Object.keys(counts).length,tuned=Object.values(counts).some(n=>n>=2);
+  const rv=S.integ.stage==='revalidated'&&S.integ.snap&&S.integ.snap.hash===curHash();
+  const pubDone=!!S.venue&&checklist().every(c=>c.ok);
+  return [
+   {n:1,name:'Discover',route:'discover',desc:'Save papers with source links',done:S.library.length>0},
+   {n:2,name:'Understand',route:'copilot',desc:'Ask the Copilot about your papers',done:S.queries>0},
+   {n:3,name:'Analyze',route:'copilot',desc:'Compare methods, find gaps',done:S.gapsRun},
+   {n:4,name:'Innovate',route:'copilot',desc:'Adopt a research direction',done:!!S.direction},
+   {n:5,name:'Experiment',route:'experiments',desc:'Record model runs',done:S.runs.length>0},
+   {n:6,name:'Evaluate',route:'experiments',desc:'Compare at least two models',done:models>=2},
+   {n:7,name:'Develop',route:'experiments',desc:'Refine one model with repeat runs',done:tuned},
+   {n:8,name:'Write',route:'integrity',desc:'Draft the manuscript',done:wc(S.manuscript)>=150},
+   {n:9,name:'Validate',route:'integrity',desc:'Run the integrity check',done:S.integ.stage!=='idle'},
+   {n:10,name:'Rectify',route:'integrity',desc:'Apply fixes',done:S.fixes>0},
+   {n:11,name:'Revalidate',route:'integrity',desc:'Confirm the fixes',done:rv},
+   {n:12,name:'Publish',route:'publish',desc:'Pick a venue, finish the checklist',done:pubDone}
+  ];
+}
+PAGES.dashboard=function(el){
+  const st=stageList(),ci=st.findIndex(s=>!s.done),next=st[ci<0?st.length-1:ci];
+  const L=Object.values(latestByModel(S.runs)).sort((a,b)=>b.metrics.f1-a.metrics.f1),best=L[0];
+  const snap=S.integ.snap,chk=checklist(),chkDone=chk.filter(c=>c.ok).length;
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Sample project</span><h1>Lightweight Intrusion Detection for IoT Traffic</h1>
+    <p class="muted">${S.direction?'Research direction: '+esc(S.direction):'No research direction chosen yet. Ask the Copilot for research gaps and adopt one.'}</p></div>
+    <button class="btn primary" data-go="${next.route}">${ci<0?'Review':'Continue with'} ${next.name} ${icon('arrow',16)}</button></div>
+  <section class="stages" aria-label="Research lifecycle">${st.map((s,i)=>`<button class="stage ${s.done?'done':''} ${i===ci?'current':''}" data-go="${s.route}"><span class="top"><span class="num">${String(s.n).padStart(2,'0')}</span>${s.done?'<span class="pill good">Done</span>':i===ci?'<span class="pill accent">Next</span>':'<span class="pill">To do</span>'}</span><b>${s.name}</b><span class="d">${s.desc}</span></button>`).join('')}</section>
+  <div class="grid2"><section class="stats">
+    <div class="card stat"><span class="l">Papers in library</span><div class="v">${S.library.length}</div><span class="l">${S.context.length} used as Copilot context</span></div>
+    <div class="card stat"><span class="l">Copilot questions</span><div class="v">${S.queries}</div><span class="l">${S.gapsRun?'Gap analysis done':'Gap analysis not run'}</span></div>
+    <div class="card stat"><span class="l">Experiment runs</span><div class="v">${S.runs.length}</div><span class="l">${best?'Best F1 '+best.metrics.f1.toFixed(2)+' ('+MODELS[best.model].lc+')':'No runs yet'}</span></div>
+    <div class="card stat"><span class="l">Manuscript readiness</span><div class="v">${snap?snap.overall:'–'}</div><span class="l">${snap?snap.label:'Not checked yet'}</span></div>
+    <div class="card stat" style="grid-column:1/-1"><span class="l">Submission checklist</span><div class="v">${chkDone} of ${chk.length}</div><span class="l">${S.venue?'Target: '+esc((VENUES.find(v=>v.id===S.venue)||{}).name):'No target venue selected'}</span></div>
+  </section>
+  <section class="card pad"><h3 class="h3d">Recent activity</h3><ul class="activity">${S.activity.slice(0,8).map(a=>`<li><time>${stamp(a.ts)}</time><span>${esc(a.text)}</span></li>`).join('')}</ul></section></div>`;
+};
+
+/* ================= Discover ================= */
+function discoverResults(){
+  const q=UI.q.trim();let list;
+  if(q){
+    list=searchIdx(PIDX,q,16).map(x=>({p:PBY[x.d.id],score:x.score}));
+    const ql=q.toLowerCase();
+    PAPERS.forEach(p=>{if(!list.find(x=>x.p===p)&&(p.title+' '+p.authors+' '+p.venue).toLowerCase().includes(ql))list.push({p,score:.12});});
+  }else{
+    list=searchIdx(PIDX,PROJECT_TOPIC,16).map(x=>({p:PBY[x.d.id],score:x.score}));
+    PAPERS.forEach(p=>{if(!list.find(x=>x.p===p))list.push({p,score:0});});
+  }
+  if(UI.kind!=='All')list=list.filter(x=>x.p.kind===UI.kind);
+  if(UI.saved)list=list.filter(x=>S.library.includes(x.p.id));
+  const mx=Math.max(.0001,...list.map(x=>x.score));
+  return list.map(x=>Object.assign(x,{rel:x.score/mx}));
+}
+function paperCard(x){
+  const p=x.p,saved=S.library.includes(p.id);
+  return `<article class="card paper"><h3>${esc(p.title)}</h3>
+  <div class="meta"><span>${esc(p.authors)}</span><span>·</span><span>${esc(p.venue)} ${p.year}</span><span class="pill">${p.kind}</span>${x.score>0?`<span class="rel" title="Relevance to your query"><i style="width:${Math.max(8,Math.round(x.rel*100))}%"></i></span>`:''}</div>
+  <p class="sum">${esc(p.summary)}</p>
+  <div class="tags">${p.tags.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>
+  <div class="row"><div class="links">${linksOf(p).map(l=>`<a href="${l.url}" target="_blank" rel="noopener">${l.label} ${icon('ext',13)}</a>`).join('')}</div>
+  <div style="display:flex;gap:8px"><button class="btn sm" data-ask="${p.id}">${icon('chat',14)} Ask Copilot</button><button class="btn sm ${saved?'':'primary'}" data-save="${p.id}">${icon('bookmark',14)} ${saved?'Saved':'Save'}</button></div></div></article>`;
+}
+function libPanel(){
+  return `<h3>Your library</h3><ul>${S.library.length?S.library.map(id=>{const p=PBY[id];return `<li><span>${esc(p.title.split(':')[0])}<small>${esc(citeOf(p))}</small></span><button class="btn ghost sm" data-unsave="${id}" aria-label="Remove ${esc(p.title)}">${icon('x',14)}</button></li>`;}).join(''):'<li class="muted">Nothing saved yet.</li>'}</ul>
+  <button class="btn primary" style="width:100%" data-go="copilot" ${S.library.length?'':'disabled'}>${icon('chat',16)} Ask the Copilot</button>`;
+}
+PAGES.discover=function(el){
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Discover</span><h1>Find papers and open them at the source.</h1><p class="muted">Every result links to its arXiv, DOI or publisher page. Summaries here are short paraphrases for orientation. Read the original before you cite it.</p></div></div>
+  <div class="disc"><div><div class="searchbar"><div class="grow">${icon('search')}<input type="search" id="q" placeholder="Try: few-shot intrusion detection, federated learning, retrieval" value="${esc(UI.q)}" aria-label="Search papers"></div></div>
+  <div class="filters" id="filters"></div><p class="note" id="count" style="margin-bottom:14px"></p><div class="papers" id="results"></div></div>
+  <aside class="card lib" id="lib"></aside></div>`;
+  const draw=()=>{
+    const list=discoverResults();
+    $('#filters').innerHTML=['All','Journal','Conference'].map(k=>`<button class="chip ${UI.kind===k?'on':''}" data-kind="${k}">${k}</button>`).join('')+`<button class="chip ${UI.saved?'on':''}" data-savedonly>Saved only</button>`;
+    $('#count').textContent=(UI.q.trim()?list.length+' results for “'+UI.q.trim()+'”. ':'Showing the prototype corpus of '+PAPERS.length+' papers, ordered by relevance to your project. ')+'In the full build, search runs on the backend.';
+    $('#results').innerHTML=list.length?list.map(paperCard).join(''):'<div class="card pad muted">No papers match. Try fewer or broader terms.</div>';
+    $('#lib').innerHTML=libPanel();
+  };
+  draw();
+  $('#q').addEventListener('input',e=>{UI.q=e.target.value;const pos=e.target.selectionStart;draw();});
+  el.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.kind){UI.kind=b.dataset.kind;draw();}
+    else if('savedonly' in b.dataset){UI.saved=!UI.saved;draw();}
+    else if(b.dataset.save){
+      const id=b.dataset.save,i=S.library.indexOf(id);
+      if(i<0){S.library.push(id);S.context.push(id);log(S,'Saved '+citeOf(PBY[id])+' to the library');toast('Saved to your library');}
+      else{S.library.splice(i,1);S.context=S.context.filter(x=>x!==id);toast('Removed from your library');}
+      save();draw();
+    }else if(b.dataset.unsave){const id=b.dataset.unsave;S.library=S.library.filter(x=>x!==id);S.context=S.context.filter(x=>x!==id);save();draw();}
+    else if(b.dataset.ask){const id=b.dataset.ask;if(!S.library.includes(id))S.library.push(id);if(!S.context.includes(id))S.context.push(id);save();go('copilot');}
+  });
+};
+
+/* ================= Copilot ================= */
+const GAP_RULES=[
+ {needs:['intrusion','few-shot'],title:'Few-shot adaptation to new attack types',text:'Combine prototype-based few-shot classification with flow-based IoT detection, so a new attack family can be learned from a handful of labelled flows.'},
+ {needs:['intrusion','federated'],title:'Federated training across IoT sites',text:'Train a detector across several networks with federated averaging, so sites share what they learn without sharing raw traffic.'},
+ {needs:['intrusion','tree-ensemble'],title:'Tree ensembles versus autoencoder detection on the same data',text:'Compare tree ensembles with autoencoder-based detection on one labelled flow dataset, and report accuracy together with model size and inference time.'},
+ {needs:['dataset','tree-ensemble'],title:'Class imbalance in flow datasets',text:'Study how class weights or resampling change recall for tree ensembles when attack flows are rare.'},
+ {needs:['retrieval','intrusion'],title:'Retrieval-grounded explanations for alerts',text:'Retrieve related incident reports or papers to attach evidence to each alert for a human analyst.'}
+];
+const QUICK=['Compare methodologies','Extract key findings','Identify research gaps','How are my experiments doing?','Explain anomaly detection'];
+function runsAnswer(ci,ctx){
+  const L=Object.values(latestByModel(S.runs)).sort((a,b)=>b.metrics.f1-a.metrics.f1);
+  if(!S.useRecords)return '<p>Experiment records are switched off in the context panel. Turn them on and ask again.</p>';
+  if(!L.length)return '<p>No experiment runs are recorded yet. Open the Experiment Engine and run a model first.</p>';
+  const b=L[0],w=L[L.length-1],m=b.metrics;
+  let h=`<p>You have <b>${S.runs.length}</b> recorded runs across <b>${L.length}</b> models. Using the latest run of each model:</p><div class="tscroll"><table class="t"><thead><tr><th>Model</th><th class="num">Accuracy</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th></tr></thead><tbody>${L.map(r=>`<tr><td>${MODELS[r.model].name} <span class="faint mono">${r.id}</span></td><td class="num">${pct(r.metrics.acc)}</td><td class="num">${pct(r.metrics.prec)}</td><td class="num">${pct(r.metrics.rec)}</td><td class="num">${r.metrics.f1.toFixed(3)}</td></tr>`).join('')}</tbody></table></div><ul>`;
+  h+=`<li><b>${MODELS[b.model].name}</b> leads on F1 (${m.f1.toFixed(3)}); <b>${MODELS[w.model].name}</b> is last (${w.metrics.f1.toFixed(3)}).</li>`;
+  if(m.rec<m.prec-.02)h+=`<li>For the leading model, recall (${pct(m.rec)}) trails precision (${pct(m.prec)}), so some attacks are being missed. Lowering the decision threshold or weighting the attack class are the usual next experiments.</li>`;
+  else if(m.prec<m.rec-.02)h+=`<li>For the leading model, precision (${pct(m.prec)}) trails recall (${pct(m.rec)}), so false alarms outnumber misses. A higher threshold or more regularisation may help.</li>`;
+  else h+=`<li>For the leading model, precision and recall are balanced.</li>`;
+  if(L.length>1&&L[0].metrics.f1-L[1].metrics.f1<.01)h+=`<li>The top two models are within 0.01 F1, so repeat the runs with different seeds before claiming a winner.</li>`;
+  if(b.model==='rf'&&ctx.includes('breiman2001'))h+=`<li>This fits the argument in ${citeOf(PBY.breiman2001)} that forests keep generalising as trees are added${ci('breiman2001')}.</li>`;
+  return h+'</ul>';
+}
+function copAnswer(q){
+  const ctx=S.context.filter(id=>PBY[id]),src=[];
+  const ci=id=>{let i=src.indexOf(id);if(i<0){src.push(id);i=src.length-1;}return `<sup class="cm">[${i+1}]</sup>`;};
+  const wantsRuns=/\b(my|our)\b[^?]*\b(experiment|run|result|model)s?\b|experiment record|how are my/i.test(q);
+  let html='';
+  if(wantsRuns)html=runsAnswer(ci,ctx);
+  else if(!ctx.length)html='<p>No papers are selected as context. Choose at least one on the left, or add papers from Discover.</p>';
+  else if(/compar|differ|versus|\bvs\b|methodolog/i.test(q)){
+    html=`<p>Comparison of the ${ctx.length} selected papers:</p><div class="tscroll"><table class="t"><thead><tr><th>Paper</th><th>Method</th><th>Data</th><th>Key result</th><th>Limitation</th></tr></thead><tbody>${ctx.map(id=>{const p=PBY[id];return `<tr><td><b>${esc(p.authors)}</b> ${p.year}${ci(id)}</td><td>${esc(p.method)}</td><td>${esc(p.data)}</td><td>${esc(p.findings[0])}</td><td>${esc(p.limits[0])}</td></tr>`;}).join('')}</tbody></table></div>`;
+  }else if(/gap|limitation|future work|direction|idea|opportunit|novel/i.test(q)){
+    S.gapsRun=true;
+    const by={};ctx.forEach(id=>PBY[id].tags.forEach(t=>{if(!by[t])by[t]=id;}));
+    const rules=GAP_RULES.filter(r=>r.needs.every(t=>by[t]));
+    html=`<h4>Limitations reported in the selected papers</h4><ul>${ctx.slice(0,6).map(id=>`<li>${esc(PBY[id].limits[0])} <span class="faint">${esc(citeOf(PBY[id]))}</span>${ci(id)}</li>`).join('')}</ul>`;
+    html+=rules.length?`<h4>Candidate research directions</h4>`+rules.map(r=>{const ids=[...new Set(r.needs.map(t=>by[t]))];return `<div class="gap"><b>${esc(r.title)}</b><span>${esc(r.text)} ${ids.map(ci).join('')}</span><div><button class="btn sm ${S.direction===r.title?'':'primary'}" data-adopt="${esc(r.title)}">${S.direction===r.title?'Adopted':'Adopt as my direction'}</button></div></div>`;}).join('')+`<p class="faint" style="margin-top:10px;font-size:13px">These are suggestions drawn from the selected papers. Check each one against a wider literature search before committing to it.</p>`:`<p>The selected papers do not combine into an obvious new direction. Add papers from a second area, such as few-shot learning or federated training, and ask again.</p>`;
+  }else if(/finding|result|extract|summar|key point|contribution/i.test(q)){
+    html=`<p>Key findings from the ${ctx.length} selected papers:</p><ul>${ctx.map(id=>{const p=PBY[id];return `<li><b>${esc(p.authors)} (${p.year})</b>${ci(id)}: ${esc(p.findings.join(' '))}</li>`;}).join('')}</ul>`;
+  }else{
+    const g=GLOSSARY.find(x=>x.re.test(q));
+    const hits=searchIdx(CIDX,q,40).filter(x=>ctx.includes(x.d.pid)&&x.score>.04).slice(0,3);
+    if(g&&/explain|what is|what are|define|meaning|how does|how do|tell me about/i.test(q)){
+      html=`<h4>${esc(g.name)}</h4><p>${esc(g.text)}</p>`;
+      if(hits.length)html+=`<p style="margin-top:10px">In your papers:</p><ul>${hits.map(h=>`<li>${esc(h.d.raw)} <span class="faint">${esc(citeOf(PBY[h.d.pid]))}</span>${ci(h.d.pid)}</li>`).join('')}</ul>`;
+    }else if(hits.length){
+      html=`<p>The most relevant passages in your selected papers:</p><ul>${hits.map(h=>`<li>${esc(h.d.raw)} <span class="faint">${esc(citeOf(PBY[h.d.pid]))}</span>${ci(h.d.pid)}</li>`).join('')}</ul><p class="faint" style="font-size:13px">These are retrieved passages, not a synthesised answer. Try “compare”, “gaps” or “findings” for a structured view.</p>`;
+    }else html='<p>I could not find passages that match that question in the selected papers. Try different terms, select more papers, or add papers from Discover.</p>';
+  }
+  return{html,sources:src};
+}
+function msgHTML(m){
+  if(m.role==='user')return `<div class="msg user"><div class="bub">${esc(m.text)}</div></div>`;
+  return `<div class="msg ai"><div>${logo(26)}</div><div class="bub">${m.html}${m.sources&&m.sources.length?`<div class="srcs">${m.sources.map((id,i)=>`<a href="${primaryLink(id)}" target="_blank" rel="noopener">[${i+1}] ${esc(citeOf(PBY[id]))}</a>`).join('')}</div>`:''}</div></div>`;
+}
+PAGES.copilot=function(el){
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Research Copilot</span><h1>Ask questions about your own papers and results.</h1><p class="muted">Answers are assembled from the papers you select and, if you allow it, your experiment records. Each claim names its source.</p></div></div>
+  <div class="cop"><aside class="card ctx"><h3>Context</h3><div id="ctxlist" style="display:grid;gap:10px"></div><hr class="divider"><label><input type="checkbox" id="useRec" ${S.useRecords?'checked':''}><span>Experiment records<small>${S.runs.length} runs from the Experiment Engine</small></span></label>
+  <p class="note">Prototype retriever: TF-IDF over short passages from each paper. The full build uses embeddings and an LLM.</p><button class="btn sm" data-go="discover">${icon('search',14)} Add papers</button></aside>
+  <section class="card chatbox"><div class="msgs" id="msgs" aria-live="polite"></div><div class="composer"><div class="qp">${QUICK.map(t=>`<button class="chip" data-q="${esc(t)}">${t}</button>`).join('')}</div><div class="in"><textarea id="ask" rows="1" placeholder="Ask about a method, a finding, a gap, or your results" aria-label="Message the Copilot"></textarea><button class="btn primary" id="send" aria-label="Send">${icon('send',16)}</button></div></div></section></div>`;
+  const drawCtx=()=>{$('#ctxlist').innerHTML=S.library.length?S.library.map(id=>{const p=PBY[id];return `<label><input type="checkbox" data-ctx="${id}" ${S.context.includes(id)?'checked':''}><span>${esc(p.title.split(':')[0])}<small>${esc(citeOf(p))}</small></span></label>`;}).join(''):'<span class="muted">No papers saved. Add some from Discover.</span>';};
+  const drawMsgs=(typing)=>{
+    const box=$('#msgs');
+    const greet=`<div class="msg ai"><div>${logo(26)}</div><div class="bub"><p>I can answer from the <b>${S.context.length}</b> paper${S.context.length===1?'':'s'} you selected${S.useRecords?' and your <b>'+S.runs.length+'</b> experiment runs':''}. Try one of the prompts below.</p></div></div>`;
+    box.innerHTML=(S.chat.length?'':greet)+S.chat.map(msgHTML).join('')+(typing?`<div class="msg ai"><div>${logo(26)}</div><div class="bub"><span class="dots"><i></i><i></i><i></i></span></div></div>`:'');
+    box.scrollTop=box.scrollHeight;
+  };
+  drawCtx();drawMsgs();
+  const ask=text=>{
+    text=text.trim();if(!text)return;
+    S.chat.push({role:'user',text});drawMsgs(true);$('#ask').value='';
+    setTimeout(()=>{const a=copAnswer(text);S.chat.push({role:'ai',html:a.html,sources:a.sources});S.queries++;log(S,'Asked the Copilot: '+(text.length>60?text.slice(0,57)+'…':text));save();if(cur==='copilot')drawMsgs();},520);
+  };
+  $('#send').addEventListener('click',()=>ask($('#ask').value));
+  $('#ask').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask($('#ask').value);}});
+  $('#useRec').addEventListener('change',e=>{S.useRecords=e.target.checked;save();});
+  el.addEventListener('change',e=>{if(e.target.dataset&&e.target.dataset.ctx){const id=e.target.dataset.ctx;S.context=S.context.filter(x=>x!==id);if(e.target.checked)S.context.push(id);save();}});
+  el.addEventListener('click',e=>{
+    const q=e.target.closest('[data-q]');if(q){ask(q.dataset.q);return;}
+    const ad=e.target.closest('[data-adopt]');
+    if(ad){S.direction=ad.dataset.adopt;log(S,'Adopted research direction: '+S.direction);save();
+      $$('[data-adopt]').forEach(b=>{const on=b.dataset.adopt===S.direction;b.textContent=on?'Adopted':'Adopt as my direction';b.classList.toggle('primary',!on);});toast('Research direction saved to your project');}
+  });
+};
+
+/* ================= Experiments ================= */
+function paramText(r){
+  const p=r.params;
+  if(r.model==='lr')return p.epochs+' epochs, rate '+p.lr;
+  if(r.model==='knn')return 'k = '+p.k;
+  if(r.model==='nb')return 'no parameters';
+  if(r.model==='dt')return 'depth '+p.maxDepth;
+  return p.trees+' trees, depth '+p.maxDepth;
+}
+function paramInputs(){
+  const p=UI.params,m=UI.model;
+  const num=(id,label,min,max,step)=>`<label class="f">${label}<input type="number" id="p-${id}" min="${min}" max="${max}" step="${step||1}" value="${p[id]}"></label>`;
+  if(m==='lr')return num('epochs','Epochs',10,500)+num('lr','Learning rate',.001,1,.01);
+  if(m==='knn')return num('k','Neighbours (k)',1,51);
+  if(m==='dt')return num('maxDepth','Maximum depth',1,14);
+  if(m==='rf')return num('trees','Trees',1,100)+num('maxDepth','Maximum depth',1,14);
+  return '<p class="note">Gaussian naive Bayes has no tunable parameters here.</p>';
+}
+function lossChart(v){
+  const W=330,H=150,l=38,b=22,t=8,r=8,mx=Math.max(...v),mn=Math.min(...v),rg=(mx-mn)||1;
+  const X=i=>l+(W-l-r)*i/Math.max(1,v.length-1),Y=x=>t+(H-t-b)*(1-(x-mn)/rg);
+  const pts=v.map((x,i)=>X(i).toFixed(1)+','+Y(x).toFixed(1));
+  const ticks=[mn,(mn+mx)/2,mx];
+  return `<svg class="ch" viewBox="0 0 ${W} ${H}" role="img" aria-label="Training loss per epoch, from ${mx.toFixed(2)} down to ${mn.toFixed(2)}">${ticks.map(x=>`<line class="gl" x1="${l}" x2="${W-r}" y1="${Y(x).toFixed(1)}" y2="${Y(x).toFixed(1)}"/><text x="${l-6}" y="${(Y(x)+3.5).toFixed(1)}" text-anchor="end">${x.toFixed(2)}</text>`).join('')}
+  <path class="ar" d="M${X(0).toFixed(1)},${H-b} L${pts.join(' L')} L${X(v.length-1).toFixed(1)},${H-b} Z"/><polyline class="ln" points="${pts.join(' ')}"/><circle class="dot" cx="${X(v.length-1).toFixed(1)}" cy="${Y(v[v.length-1]).toFixed(1)}" r="3.5"/>
+  <text x="${l}" y="${H-5}">1</text><text x="${W-r}" y="${H-5}" text-anchor="end">${v.length} epochs</text></svg>`;
+}
+function resultHTML(r){
+  const m=r.metrics,c=r.cm,mx=Math.max(c.tp,c.fp,c.tn,c.fn,1);
+  const cell=(n,lab,good)=>`<div class="cm-cell" style="background:color-mix(in srgb,${good?'var(--accent)':'var(--bad)'} ${Math.round(8+40*n/mx)}%,var(--surface))">${n}<small>${lab}</small></div>`;
+  const chart=r.loss.length?`<h3 class="h3d">Training loss</h3>${lossChart(r.loss)}`:r.importance?`<h3 class="h3d">${r.model==='lr'?'Weight share':'Feature importance'}</h3><div class="bars">${r.importance.slice().sort((a,b)=>b.value-a.value).map(f=>`<div class="bar-row"><span>${f.name}</span><span class="trk"><i style="width:${Math.round(f.value*100)}%"></i></span><span class="v">${(f.value*100).toFixed(0)}%</span></div>`).join('')}</div>`:`<h3 class="h3d">Notes</h3><p class="muted">${MODELS[r.model].name} has no loss curve or feature weights to display. Its metrics are on the test split only.</p>`;
+  return `<div class="card pad" style="margin-bottom:16px"><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;align-items:center"><div><b style="font-size:17px">${MODELS[r.model].name}</b> <span class="pill accent">${r.id}</span><div class="muted" style="font-size:13px;margin-top:3px">${paramText(r)} · seed ${r.seed} · ${r.nTrain} train / ${r.nTest} test · ${stamp(r.ts)}</div></div><span class="mono faint" title="Fingerprint of settings and metrics">record ${r.rec}</span></div></div>
+  <div class="metrics" style="margin-bottom:16px">${[['Accuracy',m.acc],['Precision',m.prec],['Recall',m.rec],['F1 score',m.f1]].map(([l,v])=>`<div class="card metric"><span class="l">${l}</span><div class="v">${pct(v)}</div></div>`).join('')}</div>
+  <div class="res-grid"><div class="card pad"><h3 class="h3d">Confusion matrix</h3><div class="cm-grid"><span></span><span class="h">Predicted benign</span><span class="h">Predicted attack</span><span class="h">Actual benign</span>${cell(c.tn,'true negatives',true)}${cell(c.fp,'false alarms',false)}<span class="h">Actual attack</span>${cell(c.fn,'missed attacks',false)}${cell(c.tp,'detected',true)}</div></div><div class="card pad">${chart}</div></div>`;
+}
+function compareHTML(){
+  const L=Object.values(latestByModel(S.runs)).sort((a,b)=>b.metrics.f1-a.metrics.f1);
+  return `<div class="card pad" style="margin-top:16px"><h3 class="h3d">Model comparison <span class="muted" style="font:400 13px var(--font-body)">(latest run of each model, ranked by F1)</span></h3><div class="bars">${L.map((r,i)=>`<div class="bar-row ${i?'alt':''}"><span>${MODELS[r.model].name}</span><span class="trk"><i style="width:${(r.metrics.f1*100).toFixed(1)}%"></i></span><span class="v">${r.metrics.f1.toFixed(3)}</span></div>`).join('')}</div></div>`;
+}
+function logHTML(){
+  return `<div class="card pad" style="margin-top:16px"><h3 class="h3d">Run log</h3><div class="tscroll"><table class="t"><thead><tr><th>Run</th><th>Model</th><th>Settings</th><th class="num">Acc</th><th class="num">Prec</th><th class="num">Rec</th><th class="num">F1</th><th>Record</th></tr></thead><tbody>${S.runs.slice().reverse().map(r=>`<tr class="clk ${UI.sel===r.id?'sel':''}" data-run="${r.id}" tabindex="0"><td class="mono">${r.id}</td><td>${MODELS[r.model].name}</td><td>${paramText(r)}, seed ${r.seed}</td><td class="num">${pct(r.metrics.acc)}</td><td class="num">${pct(r.metrics.prec)}</td><td class="num">${pct(r.metrics.rec)}</td><td class="num">${r.metrics.f1.toFixed(3)}</td><td class="mono faint">${r.rec}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+PAGES.experiments=function(el){
+  if(!UI.sel||!S.runs.find(r=>r.id===UI.sel))UI.sel=S.runs[S.runs.length-1].id;
+  const run=S.runs.find(r=>r.id===UI.sel);
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Experiment Engine</span><h1>Run models and keep a record of every result.</h1><p class="muted">Models train in your browser on a synthetic IoT flow dataset (${DATA_N.toLocaleString('en-US')} flows, ${FEATURES.length} features, ${Math.round(DATA_ATTACK*100)}% attacks) generated from a fixed seed. Each run is stored with its settings so the integrity check can compare your manuscript against it.</p></div></div>
+  <div class="exp"><aside class="card ctrl"><h3>New run</h3>
+    <label class="f">Model<select id="model">${Object.keys(MODELS).map(k=>`<option value="${k}" ${UI.model===k?'selected':''}>${MODELS[k].name}</option>`).join('')}</select></label>
+    <div id="params" style="display:grid;gap:12px">${paramInputs()}</div>
+    <label class="f">Random seed<input type="number" id="seed" min="1" max="99999" value="${UI.seed}"></label>
+    <label class="f">Test share of data<select id="test">${[.2,.25,.3].map(v=>`<option value="${v}" ${UI.test===v?'selected':''}>${Math.round(v*100)}%</option>`).join('')}</select></label>
+    <button class="btn primary" id="run">${icon('flask',16)} Run experiment</button>
+    <p class="note">Features: ${FEATURES.join(', ')}. Positive class: attack.</p></aside>
+  <div id="out" style="min-width:0">${resultHTML(run)}${compareHTML()}${logHTML()}</div></div>`;
+  $('#model').addEventListener('change',e=>{UI.model=e.target.value;UI.params=Object.assign({},MODELS[UI.model].defaults);$('#params').innerHTML=paramInputs();});
+  $('#run').addEventListener('click',()=>{
+    const p={};$$('#params input').forEach(i=>{p[i.id.slice(2)]=parseFloat(i.value);});
+    const params=Object.assign({},MODELS[UI.model].defaults,p);
+    UI.params=params;UI.seed=Math.max(1,parseInt($('#seed').value,10)||42);UI.test=parseFloat($('#test').value);
+    const btn=$('#run');btn.disabled=true;btn.textContent='Training…';
+    setTimeout(()=>{
+      const r=makeRun(S.runs,UI.model,params,UI.seed,UI.test);S.runs.push(r);UI.sel=r.id;
+      log(S,'Ran '+MODELS[r.model].name.toLowerCase()+' ('+r.id+'): F1 '+r.metrics.f1.toFixed(3));save();
+      if(cur==='experiments'){renderPage();toast(r.id+' recorded: F1 '+r.metrics.f1.toFixed(3));}
+    },30);
+  });
+  el.addEventListener('click',e=>{const tr=e.target.closest('[data-run]');if(tr){UI.sel=tr.dataset.run;$('#out').innerHTML=resultHTML(S.runs.find(r=>r.id===UI.sel))+compareHTML()+logHTML();}});
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'){const tr=e.target.closest('[data-run]');if(tr){UI.sel=tr.dataset.run;$('#out').innerHTML=resultHTML(S.runs.find(r=>r.id===UI.sel))+compareHTML()+logHTML();}}});
+};
+
+/* ================= Accounts, sign-in (demo verification) and profile ================= */
+const GMAIL=/^[a-z0-9._%+-]+@(gmail|googlemail)\.com$/i;
+const initials=n=>((n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('')||'?').toUpperCase();
+const MEM={acc:{},sess:null};
+function accounts(){try{return JSON.parse(localStorage.getItem('iris-accounts')||'{}');}catch(e){return MEM.acc;}}
+function saveAccounts(a){MEM.acc=a;try{localStorage.setItem('iris-accounts',JSON.stringify(a));}catch(e){}}
+function getSession(){try{return localStorage.getItem('iris-session');}catch(e){return MEM.sess;}}
+function setSession(email){MEM.sess=email;try{if(email)localStorage.setItem('iris-session',email);else localStorage.removeItem('iris-session');}catch(e){}}
+function restoreSession(){
+  const em=getSession(),a=em&&accounts()[em];
+  if(a){USER=a;S=loadState();}
+}
+function signOut(){
+  clearTimeout(_st);try{localStorage.setItem(stateKey(),JSON.stringify(S));}catch(e){}
+  setSession(null);USER=null;S=null;UI.sel=null;UI.draft={};UI.venueView=null;
+  AUTH.step='form';AUTH.mode='signin';AUTH.err='';
+  go('home');toast('Signed out');
+}
+function newCode(){
+  AUTH.code=String(100000+(crypto.getRandomValues(new Uint32Array(1))[0]%900000));
+  AUTH.exp=Date.now()+5*60000;AUTH.tries=0;AUTH.resendAt=Date.now()+30000;
+}
+function authForm(){
+  const su=AUTH.mode==='signup';
+  return `<div class="tabs" role="tablist"><button role="tab" aria-selected="${!su}" class="${su?'':'on'}" data-mode="signin">Sign in</button><button role="tab" aria-selected="${su}" class="${su?'on':''}" data-mode="signup">Sign up</button></div>
+  <div><h1>${su?'Create your account':'Welcome back'}</h1><p class="muted" style="margin-top:6px">${su?'Use your Gmail address. We verify it with a one-time code before the account is created.':'Enter the Gmail address you signed up with. We will ask for a one-time code.'}</p></div>
+  <form id="authForm" class="form-grid" novalidate>${AUTH.err?`<div class="err" role="alert">${esc(AUTH.err)}</div>`:''}
+  ${su?`<label class="f" for="a-name">Full name<input type="text" id="a-name" autocomplete="name" value="${esc(AUTH.name)}" placeholder="Your name"></label>`:''}
+  <label class="f" for="a-email">Gmail address<input type="text" id="a-email" inputmode="email" autocomplete="email" value="${esc(AUTH.email)}" placeholder="name@gmail.com"></label>
+  <button class="btn primary" type="submit">${icon('mail',16)} Send verification code</button></form>
+  <p class="muted" style="font-size:13.5px">${su?'Already have an account? <a href="#" data-mode="signin">Sign in</a>':'New to IRIS? <a href="#" data-mode="signup">Create an account</a>'}</p>`;
+}
+function authOtp(){
+  const left=Math.max(0,5-AUTH.tries);
+  return `<div><span class="eyebrow">Verify your email</span><h1 style="margin-top:6px">Enter the 6-digit code</h1><p class="muted" style="margin-top:6px">For ${esc(AUTH.email)}. The code is valid for 5 minutes.</p></div>
+  <div class="demo-note"><b>Demo mode.</b> This prototype has no mail server or Google connection, so the code is shown here instead of being emailed. The full build sends it to the Gmail address from the backend.<br><span class="codechip" aria-label="Demo verification code">${AUTH.code}</span></div>
+  <form id="otpForm" class="form-grid" novalidate>${AUTH.err?`<div class="err" role="alert">${esc(AUTH.err)}</div>`:''}
+  <label class="f" for="otp">Verification code<input type="text" id="otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-describedby="tries"></label>
+  <small id="tries" class="faint">${left} attempt${left===1?'':'s'} left</small>
+  <button class="btn primary" type="submit">Verify and continue</button></form>
+  <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><button class="btn ghost sm" id="resend" disabled>Resend code</button><button class="btn ghost sm" data-back>Use a different address</button></div>`;
+}
+function authPage(){
+  return `<div class="auth"><aside class="auth-side"><a class="brand" href="#home" data-go="home" aria-label="IRIS home">${logo(34)}<span class="brand-name">IRIS</span></a>
+  <div><h2>Your research history stays with your account.</h2><ul>
+  <li>${icon('check',16)}<span>Saved papers, Copilot conversations, experiment runs and manuscript drafts are kept per account.</span></li>
+  <li>${icon('check',16)}<span>Sign in with a Gmail address and confirm it with a one-time code.</span></li>
+  <li>${icon('check',16)}<span>Every figure in a manuscript stays linked to the run that produced it.</span></li></ul></div>
+  <p class="faint" style="font-size:13px">Prototype: accounts and history are stored in this browser only.</p></aside>
+  <main class="auth-main"><div class="auth-top"><button class="btn ghost sm" data-go="home">${icon('arrow',14).replace('<svg','<svg style="transform:scaleX(-1)"')} Back to site</button>${themeBtn()}</div>
+  <div class="card auth-card">${AUTH.step==='otp'?authOtp():authForm()}</div></main></div>`;
+}
+function bindAuth(){
+  const root=$('.auth-card');
+  clearInterval(AUTH.timer);
+  if(AUTH.step==='otp'){
+    const rb=$('#resend'),tick=()=>{
+      const b=$('#resend');if(!b){clearInterval(AUTH.timer);return;}
+      const s=Math.ceil((AUTH.resendAt-Date.now())/1000);
+      if(s>0){b.disabled=true;b.textContent='Resend code in '+s+'s';}else{b.disabled=false;b.textContent='Resend code';}
+    };
+    tick();AUTH.timer=setInterval(tick,1000);
+    const o=$('#otp');if(o)o.focus();
+  }
+  root.addEventListener('click',e=>{
+    const m=e.target.closest('[data-mode]');
+    if(m){e.preventDefault();AUTH.name=($('#a-name')||{}).value||AUTH.name;AUTH.email=($('#a-email')||{}).value||AUTH.email;AUTH.mode=m.dataset.mode;AUTH.err='';render();return;}
+    if(e.target.closest('[data-back]')){AUTH.step='form';AUTH.err='';AUTH.code=null;render();return;}
+    if(e.target.closest('#resend')){const b=$('#resend');if(b&&!b.disabled){newCode();AUTH.err='';render();toast('A new code was generated');}}
+  });
+  const f=$('#authForm');
+  if(f)f.addEventListener('submit',e=>{
+    e.preventDefault();
+    const email=$('#a-email').value.trim().toLowerCase(),name=($('#a-name')||{value:''}).value.trim();
+    AUTH.email=email;AUTH.name=name;
+    const acc=accounts();let err='';
+    if(!GMAIL.test(email))err='Enter a Gmail address, for example name@gmail.com.';
+    else if(AUTH.mode==='signup'&&!name)err='Enter your full name.';
+    else if(AUTH.mode==='signup'&&acc[email])err='An account already exists for this address. Use Sign in instead.';
+    else if(AUTH.mode==='signin'&&!acc[email])err='No account found for this address. Use Sign up to create one.';
+    if(err){AUTH.err=err;render();return;}
+    AUTH.err='';newCode();AUTH.step='otp';render();
+  });
+  const of=$('#otpForm');
+  if(of)of.addEventListener('submit',e=>{
+    e.preventDefault();
+    const v=$('#otp').value.trim();
+    if(Date.now()>AUTH.exp){AUTH.err='This code has expired. Request a new one.';render();return;}
+    if(AUTH.tries>=5){AUTH.err='Too many wrong attempts. Request a new code.';render();return;}
+    if(!/^\d{6}$/.test(v)){AUTH.err='Enter all 6 digits.';render();return;}
+    if(v!==AUTH.code){AUTH.tries++;AUTH.err=AUTH.tries>=5?'Too many wrong attempts. Request a new code.':'That code is not correct.';render();return;}
+    const acc=accounts();
+    if(AUTH.mode==='signup'&&!acc[AUTH.email]){acc[AUTH.email]={email:AUTH.email,name:AUTH.name,org:'',created:Date.now()};saveAccounts(acc);}
+    USER=acc[AUTH.email];setSession(USER.email);S=loadState();
+    if(!S.activity.length||S.activity[0].text.indexOf('Signed in')<0)log(S,'Signed in as '+USER.email);
+    const to=AUTH.pending||'dashboard';
+    AUTH.step='form';AUTH.code=null;AUTH.pending=null;AUTH.err='';clearInterval(AUTH.timer);save();
+    go(to);toast('Email verified. Welcome, '+USER.name.split(' ')[0]+'.');
+  });
+}
+
+PAGES.profile=function(el){
+  const L=Object.values(latestByModel(S.runs)),since=new Date(USER.created).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Profile</span><h1>Your account and research history.</h1><p class="muted">Everything below is saved to this account on this device.</p></div></div>
+  <div class="prof"><section class="card pad"><div class="prof-head"><span class="avatar lg" aria-hidden="true">${initials(USER.name)}</span><div><b style="font-size:18px">${esc(USER.name)}</b><div class="muted" style="font-size:14px">${esc(USER.email)}</div><span class="pill good" style="margin-top:6px">${icon('check',12)} Email verified</span></div></div>
+    <form id="profForm" class="form-grid" novalidate><label class="f" for="p-name">Full name<input type="text" id="p-name" value="${esc(USER.name)}"></label>
+    <label class="f" for="p-email">Gmail address<input type="text" id="p-email" value="${esc(USER.email)}" disabled></label>
+    <label class="f" for="p-org">Institution or organisation<input type="text" id="p-org" value="${esc(USER.org||'')}" placeholder="Optional"></label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" type="submit">Save profile</button><button class="btn" type="button" data-signout>Sign out</button></div></form></section>
+  <div style="display:grid;gap:16px;min-width:0"><section class="card pad"><h3 class="h3d">Saved history</h3><div class="stats">
+    <div class="card stat"><span class="l">Papers saved</span><div class="v">${S.library.length}</div></div><div class="card stat"><span class="l">Copilot questions</span><div class="v">${S.queries}</div></div>
+    <div class="card stat"><span class="l">Experiment runs</span><div class="v">${S.runs.length}</div></div><div class="card stat"><span class="l">Fixes applied</span><div class="v">${S.fixes}</div></div></div>
+    <p class="muted" style="font-size:13px;margin-top:12px">Member since ${since}.</p></section>
+  <section class="card pad danger" id="danger"><h3 class="h3d">Delete account</h3><p class="muted" style="font-size:14px">Removes this account and its saved history from this browser. This cannot be undone.</p><div id="delzone" style="margin-top:12px"><button class="btn" data-del1>Delete my account</button></div></section></div></div>`;
+  $('#profForm').addEventListener('submit',e=>{
+    e.preventDefault();const n=$('#p-name').value.trim();
+    if(!n){toast('Name cannot be empty');return;}
+    USER.name=n;USER.org=$('#p-org').value.trim();const a=accounts();a[USER.email]=USER;saveAccounts(a);render();toast('Profile saved');
+  });
+  el.addEventListener('click',e=>{
+    if(e.target.closest('[data-del1]')){$('#delzone').innerHTML=`<p style="margin-bottom:10px"><b>Delete ${esc(USER.email)} and all its history?</b></p><div style="display:flex;gap:8px"><button class="btn primary" style="background:var(--bad);border-color:var(--bad);color:#fff" data-del2>Yes, delete everything</button><button class="btn" data-del0>Cancel</button></div>`;}
+    else if(e.target.closest('[data-del0]')){$('#delzone').innerHTML='<button class="btn" data-del1>Delete my account</button>';}
+    else if(e.target.closest('[data-del2]')){
+      clearTimeout(_st);const em=USER.email,a=accounts();delete a[em];saveAccounts(a);
+      try{localStorage.removeItem(stateKey());}catch(_){}
+      setSession(null);USER=null;S=null;go('home');toast('Account deleted');
+    }
+  });
+};
+
+/* ================= Integrity & Novelty ================= */
+const COMPS=[['orig','Originality'],['nov','Novelty'],['cite','Citation accuracy'],['contrib','Research contribution'],['cons','Results consistency']];
+function compBars(sc){return `<div class="comp">${COMPS.map(([k,l])=>`<div class="r"><span>${l}</span><span class="trk"><i style="width:${sc[k]}%;background:${scoreColor(sc[k])}"></i></span><span class="v">${sc[k]}</span></div>`).join('')}</div>`;}
+function findingHTML(f){
+  return `<article class="card finding"><header>${sevPill(f.sev)}<span class="cat">${f.cat}</span></header><h4>${esc(f.title)}</h4><p>${esc(f.detail)}</p>${f.quote?`<blockquote>${esc(f.quote)}</blockquote>`:''}
+  <div class="acts">${f.fix?`<button class="btn sm primary" data-act="fix" data-id="${esc(f.id)}">${icon('check',14)} ${esc(f.fix.label)}</button>`:''}${f.ack?`<button class="btn sm" data-act="ack" data-id="${esc(f.id)}">${esc(f.ack)}</button>`:''}${f.go?`<button class="btn sm" data-go="${f.go}">Open Experiment Engine</button>`:''}${!f.fix&&!f.ack&&!f.go?'<span class="faint" style="font-size:13px">Needs your judgement. Edit the draft, then revalidate.</span>':''}</div></article>`;
+}
+function integPanel(){
+  const a=live(),st=S.integ.stage,snap=S.integ.snap,base=S.integ.baseline,stale=snap&&snap.hash!==curHash();
+  const auto=a.findings.filter(f=>f.fix).length;
+  let h=`<div class="pipe">
+   <button data-act="detect" class="${st==='detected'?'on':''}"><span class="k">Step 1</span><b>Detect</b><small>${st==='idle'?'Analyse the draft':'Run again as a new baseline'}</small></button>
+   <button data-act="rectify" ${st==='idle'?'disabled':''} class="${st==='rectified'?'on':''}"><span class="k">Step 2</span><b>Rectify</b><small>${st==='idle'?'Detect first':auto?'Apply '+auto+' fix'+(auto===1?'':'es'):'No automatic fixes left'}</small></button>
+   <button data-act="revalidate" ${st==='idle'?'disabled':''} class="${st==='revalidated'?'on':''}"><span class="k">Step 3</span><b>Revalidate</b><small>Confirm the new score</small></button></div>`;
+  if(!snap)return h+`<div class="card pad"><h3 class="h3d">Ready to check</h3><p class="muted">Run <b>Detect</b> to compare this draft with the paper library and your experiment records. It checks similarity, novelty, citations, the contribution statement and every reported result.</p></div>`;
+  if(stale)h+=`<div class="banner">The draft has changed since the last validation. Revalidate to refresh the score.</div>`;
+  const delta=base&&st==='revalidated'&&base.hash!==snap.hash?snap.overall-base.overall:null;
+  h+=`<div class="card score">${ring(snap.overall)}<div><b style="font-size:17px">${snap.label}</b><div class="muted" style="font-size:13.5px;margin:2px 0 10px">${delta!==null?`Baseline ${base.overall}, now ${snap.overall} (<span class="delta ${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta}</span>)`:'Readiness for submission, 0 to 100'}</div>${compBars(snap.scores)}</div></div>`;
+  if(a.closest)h+=`<p class="note" style="margin-bottom:14px">Closest prior work in the library: <b>${esc(citeOf(a.closest))}</b>, ${esc(a.closest.title)} (text similarity ${a.maxcos.toFixed(2)}).</p>`;
+  if(st==='revalidated'&&delta!==null){
+    h+=`<div class="card pad" style="margin-bottom:14px"><h3 class="h3d">Before and after</h3><div class="tscroll"><table class="t cmp"><thead><tr><th>Check</th><th class="num">Detected</th><th class="num">Now</th><th class="num">Change</th></tr></thead><tbody>${COMPS.map(([k,l])=>{const d=snap.scores[k]-base.scores[k];return `<tr><td>${l}</td><td class="num">${base.scores[k]}</td><td class="num">${snap.scores[k]}</td><td class="num delta ${d>0?'up':d<0?'down':''}">${d>0?'+':''}${d}</td></tr>`;}).join('')}<tr><td><b>Overall</b></td><td class="num">${base.overall}</td><td class="num">${snap.overall}</td><td class="num delta ${delta>=0?'up':'down'}"><b>${delta>=0?'+':''}${delta}</b></td></tr></tbody></table></div></div>`;
+  }
+  const c=a.counts;
+  h+=`<h3 class="h3d">${a.findings.length?a.findings.length+' open finding'+(a.findings.length===1?'':'s'):'No open findings'}</h3>`;
+  if(a.findings.length)h+=`<p class="muted" style="font-size:13.5px;margin:-4px 0 12px">${c.high} high, ${c.medium} medium, ${c.low} low. Findings reflect the current text; the score above reflects the last validation.</p><div class="finds">${a.findings.map(findingHTML).join('')}</div>`;
+  else h+=`<div class="card pad muted">Nothing is flagged in the current text. Revalidate to confirm.</div>`;
+  return h;
+}
+PAGES.integrity=function(el){
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Research Integrity &amp; Novelty Engine</span><h1>Detect, rectify, revalidate.</h1><p class="muted">The draft is checked against the paper library and your experiment records. Fixes change the text only when you click them, and you can undo anything by editing.</p></div></div>
+  <div class="split"><section class="card editor"><div class="bar"><b>Manuscript draft</b><span id="wc"></span></div><textarea id="ms" spellcheck="true" aria-label="Manuscript draft"></textarea><p class="note">This sample draft contains deliberate problems. Edit it or paste your own. Citations are read in (Author, Year) form.</p></section><section id="panel" style="min-width:0"></section></div>`;
+  const ta=$('#ms'),panel=$('#panel'),wcEl=$('#wc');
+  ta.value=S.manuscript;
+  const upd=()=>{wcEl.textContent=wc(S.manuscript).toLocaleString('en-US')+' words';};
+  const draw=()=>{panel.innerHTML=integPanel();};
+  upd();draw();
+  let t;ta.addEventListener('input',()=>{S.manuscript=ta.value;upd();save();clearTimeout(t);t=setTimeout(()=>{if(cur==='integrity')draw();},300);});
+  panel.addEventListener('click',e=>{
+    const b=e.target.closest('[data-act]');if(!b||b.disabled)return;
+    const act=b.dataset.act,id=b.dataset.id;
+    if(act==='detect'){const s=snapshotOf(live());S.integ.baseline=s;S.integ.snap=s;S.integ.stage='detected';log(S,'Integrity check run: readiness '+s.overall);toast('Detect finished: readiness '+s.overall);}
+    else if(act==='rectify'){
+      const r=fixAll(S.manuscript,S.runs,S.acks);
+      if(!r.applied){toast('No automatic fixes left. Review the remaining findings.');return;}
+      S.manuscript=r.text;S.fixes+=r.applied;S.integ.stage='rectified';log(S,'Applied '+r.applied+' fixes to the manuscript');toast('Applied '+r.applied+' fixes. Review the changes, then revalidate.');
+    }else if(act==='revalidate'){const s=snapshotOf(live());S.integ.snap=s;S.integ.stage='revalidated';log(S,'Revalidated: readiness '+s.overall);toast('Revalidated: readiness '+s.overall);}
+    else if(act==='fix'){
+      const f=live().findings.find(x=>x.id===id);if(!f||!f.fix)return;
+      const nt=f.fix.apply(S.manuscript);if(nt===S.manuscript){toast('That text is no longer in the draft.');return;}
+      S.manuscript=nt;S.fixes++;S.integ.stage='rectified';log(S,'Applied fix: '+f.fix.label);toast('Fix applied. Revalidate when you are done.');
+    }else if(act==='ack'){S.acks[id]=true;log(S,'Marked a citation as checked manually');toast('Marked as checked');}
+    ta.value=S.manuscript;upd();save();draw();
+  });
+};
+
+/* ================= Publish ================= */
+const MANUAL=[['m-format','Manuscript follows the venue template','Use the template named for the selected venue'],['m-abs','Abstract fits the venue’s word limit',''],['m-ethics','Ethics, data availability and conflict statements added',''],['m-authors','Author names, affiliations and ORCID iDs are complete',''],['m-fig','Figures and tables are legible and numbered',''],['m-cover','Cover letter reviewed and personalised',''],['m-reviewers','Suggested reviewers listed, if the venue asks for them',''],['m-licence','Copyright or licence form ready','']];
+function checklist(){
+  const a=live(),v=S.integ,reval=v.stage==='revalidated'&&v.snap&&v.snap.hash===curHash();
+  const nf=cat=>a.findings.filter(f=>f.cat===cat).length;
+  const auto=[
+   {id:'a-runs',label:'Experiment records exist',ok:S.runs.length>0,hint:S.runs.length+' runs recorded'},
+   {id:'a-reval',label:'Draft revalidated after its last edit',ok:reval,hint:reval?'Readiness '+v.snap.overall:'Run Revalidate on the Integrity page'},
+   {id:'a-high',label:'No high-severity findings open',ok:a.counts.high===0,hint:a.counts.high?a.counts.high+' open':'All clear'},
+   {id:'a-cons',label:'Reported results match experiment records',ok:nf('Results consistency')===0,hint:nf('Results consistency')?nf('Results consistency')+' mismatches':'Every figure traced to a run'},
+   {id:'a-cite',label:'Citations verified against sources',ok:nf('Citation accuracy')===0,hint:a.cites.verified+' of '+a.cites.total+' verified'},
+   {id:'a-sim',label:'No uncited text overlap with the library',ok:!a.findings.some(f=>f.cat==='Similarity'&&f.sev!=='low'),hint:''},
+   {id:'a-contrib',label:'Contribution statement present',ok:a.hasContrib,hint:''}
+  ].map(x=>Object.assign(x,{manual:false}));
+  return auto.concat(MANUAL.map(([id,label,hint])=>({id,label,hint,manual:true,ok:!!S.checks[id]})));
+}
+function coverLetter(v){
+  const lines=S.manuscript.split('\n'),title=(lines[0]||'Untitled manuscript').trim();
+  const m=S.manuscript.match(/^Abstract\s*\n([\s\S]*?)(?:\n\s*\n|$)/m);
+  const abs=m?sentencesOf(m[1]).slice(0,2).join(' '):sentencesOf(S.manuscript).slice(1,3).join(' ');
+  const L=Object.values(latestByModel(S.runs)).sort((a,b)=>b.metrics.f1-a.metrics.f1),b=L[0];
+  return `Dear Editors,\n\nPlease consider the enclosed manuscript, “${title}”, for publication in ${v.name}.\n\n${abs}\n\n`+(b?`All quantitative results in the manuscript come from recorded experiment runs (best model: ${MODELS[b.model].lc}, F1 ${b.metrics.f1.toFixed(2)}). The draft was checked for citation accuracy and text overlap before submission.\n\n`:'')+`[Confirm before sending: the work is original and is not under review elsewhere.]\n\nSincerely,\n[Author name]\n[Affiliation and contact details]`;
+}
+function refList(){
+  const seen=new Set(),out=[];
+  parseCites(S.manuscript).forEach(c=>{const cand=(SURNAMES[c.surname.toLowerCase()]||[]).find(p=>p.year===c.year);if(cand&&!seen.has(cand.id)){seen.add(cand.id);const l=linksOf(cand).find(x=>x.label==='DOI')||linksOf(cand)[0];out.push(cand.authors+' ('+cand.year+'). '+cand.title+'. '+cand.venue+'.'+(l?' '+l.url:''));}});
+  return out;
+}
+function reproRecord(){
+  return JSON.stringify({dataset:{generator:'synthetic IoT flows',records:DATA_N,features:FEATURES,attackShare:DATA_ATTACK,datasetSeed:2026},runs:S.runs.map(r=>({id:r.id,model:MODELS[r.model].name,params:r.params,seed:r.seed,testShare:r.testFrac,metrics:{accuracy:+r.metrics.acc.toFixed(4),precision:+r.metrics.prec.toFixed(4),recall:+r.metrics.rec.toFixed(4),f1:+r.metrics.f1.toFixed(4)},record:r.rec}))},null,2);
+}
+PAGES.publish=function(el){
+  const ms=S.manuscript;
+  const fits=VENUES.map(v=>({v,fit:venueFit(v,ms)})).sort((a,b)=>b.fit-a.fit);
+  if(!UI.venueView)UI.venueView=S.venue||fits[0].v.id;
+  UI.vkind=UI.vkind||'All';
+  el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Publish</span><h1>Choose a venue and finish the submission checklist.</h1><p class="muted">Scope match compares your draft with each venue’s typical topics. It is a starting point. Always confirm scope, limits, deadlines and fees on the venue’s own site.</p></div></div>
+  <div class="pub"><section><div class="filters" id="vfilters"></div><div class="venues" id="venues"></div></section><section class="section-gap" id="vpanel" style="min-width:0"></section></div>`;
+  const drawList=()=>{
+    $('#vfilters').innerHTML=['All','Journal','Conference'].map(k=>`<button class="chip ${UI.vkind===k?'on':''}" data-vk="${k}">${k}</button>`).join('');
+    $('#venues').innerHTML=fits.filter(x=>UI.vkind==='All'||x.v.type===UI.vkind).map(({v,fit})=>`<button class="venue ${UI.venueView===v.id?'on':''}" data-venue="${v.id}"><div class="top"><div><b>${esc(v.name)}</b><div class="muted" style="font-size:13px">${v.pub}</div></div><span style="display:flex;gap:6px"><span class="pill">${v.type}</span>${S.venue===v.id?'<span class="pill accent">Target</span>':''}</span></div><div class="fit"><span class="trk"><i style="width:${fit}%"></i></span><span>${fit}% scope match</span></div></button>`).join('');
+  };
+  const drawPanel=()=>{
+    const v=VENUES.find(x=>x.id===UI.venueView),chk=checklist(),done=chk.filter(c=>c.ok).length;
+    if(UI.draft[v.id]===undefined)UI.draft[v.id]=coverLetter(v);
+    const refs=refList();
+    $('#vpanel').innerHTML=`<div class="card pad"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start"><div><h2 style="font:400 28px/1.1 var(--font-display)">${esc(v.name)}</h2><p class="muted" style="margin-top:4px">${v.type} · ${v.pub}</p></div><button class="btn ${S.venue===v.id?'':'primary'}" data-target="${v.id}">${S.venue===v.id?'Target venue':'Target this venue'}</button></div>
+      <h3 class="h3d" style="margin-top:16px;font-size:20px">Format</h3><p>${esc(v.tpl)}</p><ul style="margin:10px 0 0;padding-left:18px;display:grid;gap:5px">${v.notes.map(n=>`<li>${esc(n)}</li>`).join('')}<li>Confirm current page limits, deadlines and fees on the venue’s site.</li></ul></div>
+    <div class="card pad"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><h3 class="h3d" style="margin:0">Submission checklist</h3><span id="progress" class="pill ${done===chk.length?'good':''}">${done} of ${chk.length} complete</span></div>
+      <ul class="checklist" style="margin-top:10px">${chk.map(c=>c.manual?`<li><input type="checkbox" id="${c.id}" data-check="${c.id}" ${c.ok?'checked':''}><label for="${c.id}">${esc(c.label)}${c.hint?`<small>${esc(c.hint)}</small>`:''}</label><span></span></li>`:`<li><span class="auto ${c.ok?'ok':'no'}" aria-label="${c.ok?'Passed':'Not met'}">${icon(c.ok?'check':'x',12)}</span><span>${esc(c.label)}<small>${esc(c.hint)}</small></span><span class="pill ${c.ok?'good':'warn'}">${c.ok?'Auto':'Open'}</span></li>`).join('')}</ul></div>
+    <div class="card pad"><h3 class="h3d">Supporting documents</h3><div class="docs">
+      <div><label class="f" for="cover">Cover letter draft</label><textarea id="cover" rows="12" style="margin-top:6px">${esc(UI.draft[v.id])}</textarea><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="btn sm" data-copy="cover">${icon('copy',14)} Copy letter</button><button class="btn sm ghost" data-regen>Regenerate from draft</button></div></div>
+      <div class="doc"><div><b>Submission checklist</b><small>Plain text, with status of each item</small></div><button class="btn sm" data-copy="checklist">${icon('copy',14)} Copy</button></div>
+      <div class="doc"><div><b>Reproducibility record</b><small>${S.runs.length} runs with settings, seeds and metrics (JSON)</small></div><button class="btn sm" data-copy="repro">${icon('copy',14)} Copy</button></div>
+      <div class="doc"><div><b>Reference list</b><small>${refs.length} verified reference${refs.length===1?'':'s'}. Complete the author lists from each DOI record.</small></div><button class="btn sm" data-copy="refs" ${refs.length?'':'disabled'}>${icon('copy',14)} Copy</button></div></div></div>`;
+  };
+  drawList();drawPanel();
+  el.addEventListener('input',e=>{if(e.target.id==='cover')UI.draft[UI.venueView]=e.target.value;});
+  el.addEventListener('change',e=>{const c=e.target.dataset&&e.target.dataset.check;if(c){S.checks[c]=e.target.checked;save();const chk=checklist(),n=chk.filter(x=>x.ok).length,p=$('#progress');if(p){p.textContent=n+' of '+chk.length+' complete';p.className='pill'+(n===chk.length?' good':'');}}});
+  el.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.vk){UI.vkind=b.dataset.vk;drawList();}
+    else if(b.dataset.venue){UI.venueView=b.dataset.venue;drawList();drawPanel();}
+    else if(b.dataset.target){S.venue=b.dataset.target;log(S,'Targeted '+VENUES.find(x=>x.id===S.venue).name);save();drawList();drawPanel();toast('Target venue set');}
+    else if('regen' in b.dataset){UI.draft[UI.venueView]=coverLetter(VENUES.find(x=>x.id===UI.venueView));drawPanel();}
+    else if(b.dataset.copy){
+      const k=b.dataset.copy;
+      if(k==='cover')copyText($('#cover').value);
+      else if(k==='checklist')copyText(checklist().map(c=>(c.ok?'[x] ':'[ ] ')+c.label).join('\n'));
+      else if(k==='repro')copyText(reproRecord());
+      else if(k==='refs')copyText(refList().join('\n'));
+    }
+  });
+};
+
+/* ================= Boot ================= */
+try{const t=localStorage.getItem('iris-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}
+restoreSession();
+{const h=location.hash.replace('#','');cur=guard(ROUTES.includes(h)?h:'home');}
+render();
+
+</script>
+
+
+<script>
+/* IRIS backend bridge: usable from the UI or browser console. */
+window.IRIS_API = {
+  async request(path, options={}) {
+    const response = await fetch('/api'+path, {
+      credentials:'same-origin',
+      headers:{'Content-Type':'application/json', ...(options.headers||{})},
+      ...options
+    });
+    const data=await response.json().catch(()=>({error:'Invalid server response'}));
+    if(!response.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  },
+  health(){return this.request('/health')},
+  searchPapers(q=''){return this.request('/papers?q='+encodeURIComponent(q))},
+  ask(question, context=''){return this.request('/copilot',{method:'POST',body:JSON.stringify({question,context})})},
+  runExperiment(config={}){return this.request('/experiments/run',{method:'POST',body:JSON.stringify(config)})},
+  checkIntegrity(manuscript){return this.request('/integrity/check',{method:'POST',body:JSON.stringify({manuscript})})},
+  rectify(manuscript){return this.request('/integrity/rectify',{method:'POST',body:JSON.stringify({manuscript})})},
+  venues(){return this.request('/publication/venues')}
+};
+(async()=>{const el=document.getElementById('iris-api-status');try{await IRIS_API.health();el.textContent='IRIS API · online';el.style.color='var(--good)';el.title='Backend API is responding';}catch(e){el.textContent='IRIS API · start server';el.title='Run python app.py to enable backend endpoints';}})();
+</script>
+<script>
+/* IRIS dynamic integration layer: replaces browser-only demo handlers with API-backed workflows. */
+(function(){
+  const $api=(p,o)=>window.IRIS_API.request(p,o);
+  const esc2=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const json=o=>JSON.stringify(o);
+  let projectId=null, syncTimer=null, integrityLast=null;
+  const projectKey=()=> 'iris-server-project:'+((USER&&USER.email)||'guest');
+  async function ensureProject(){
+    if(!USER) return null;
+    try{
+      const saved=localStorage.getItem(projectKey());
+      if(saved){projectId=Number(saved); const p=await $api('/projects/'+projectId); if(p&&p.state){
+        const state=p.state;
+        if(state.library) S.library=state.library;
+        if(state.context) S.context=state.context;
+        if(state.chat) S.chat=state.chat;
+        if(state.runs) S.runs=state.runs;
+        if(typeof state.manuscript==='string') S.manuscript=state.manuscript;
+        if(state.integ) S.integ=state.integ;
+        if(state.activity) S.activity=state.activity;
+        if(state.checks) S.checks=state.checks;
+        if(state.acks) S.acks=state.acks;
+        if(state.venue) S.venue=state.venue;
+        if(state.serverPapers) S.serverPapers=state.serverPapers;
+        if(state.serverChat) S.serverChat=state.serverChat;
+        if(state.serverExperiments) S.serverExperiments=state.serverExperiments;
+        if(state.serverContext) S.serverContext=state.serverContext;
+        if(state.uploadedDataset) S.uploadedDataset=state.uploadedDataset;
+        return projectId;
+      }}
+    }catch(e){ projectId=null; }
+    try{const p=await $api('/projects',{method:'POST',body:json({title:'My IRIS Research Workspace',state:serialState()})});projectId=p.id;localStorage.setItem(projectKey(),String(projectId));return projectId;}catch(e){return null;}
+  }
+  function serialState(){return {library:S?.library||[],context:S?.context||[],chat:S?.chat||[],runs:S?.runs||[],manuscript:S?.manuscript||'',integ:S?.integ||{},activity:S?.activity||[],checks:S?.checks||{},acks:S?.acks||{},venue:S?.venue||null,serverPapers:S?.serverPapers||[],serverChat:S?.serverChat||[],serverExperiments:S?.serverExperiments||[],serverContext:S?.serverContext||'',uploadedDataset:S?.uploadedDataset||null};}
+  function syncProject(){
+    if(!USER||!S)return;
+    clearTimeout(syncTimer);syncTimer=setTimeout(async()=>{
+      try{await ensureProject();if(projectId)await $api('/projects/'+projectId,{method:'PUT',body:json({title:'My IRIS Research Workspace',state:serialState()})});}
+      catch(e){console.warn('IRIS project sync:',e.message);}
+    },450);
+  }
+  const oldSave=save;
+  save=function(){oldSave();syncProject();};
+
+  // Real backend account creation and login (password based; no fake OTP screen).
+  authForm=function(){
+    const signup=AUTH.mode==='signup';
+    return `<div class="tabs" role="tablist"><button role="tab" aria-selected="${!signup}" class="${signup?'':'on'}" data-mode="signin">Sign in</button><button role="tab" aria-selected="${signup}" class="${signup?'on':''}" data-mode="signup">Create account</button></div>
+    <div><h1>${signup?'Create your IRIS account':'Welcome back'}</h1><p class="muted" style="margin-top:6px">Your account and research workspace are stored by the IRIS backend.</p></div>
+    <form id="authForm" class="form-grid" novalidate>${AUTH.err?`<div class="err" role="alert">${esc2(AUTH.err)}</div>`:''}
+    ${signup?`<label class="f" for="a-name">Full name<input type="text" id="a-name" autocomplete="name" value="${esc2(AUTH.name)}" placeholder="Your name" required></label>`:''}
+    <label class="f" for="a-email">Email address<input type="email" id="a-email" autocomplete="email" value="${esc2(AUTH.email)}" placeholder="you@example.com" required></label>
+    <label class="f" for="a-password">Password<input type="password" id="a-password" autocomplete="${signup?'new-password':'current-password'}" minlength="8" placeholder="At least 8 characters" required></label>
+    <button class="btn primary" type="submit">${signup?'Create account':'Sign in'} ${icon('arrow',16)}</button></form>
+    <p class="muted" style="font-size:13.5px">${signup?'Already registered?':'New to IRIS?'} <a href="#" data-mode="${signup?'signin':'signup'}">${signup?'Sign in':'Create an account'}</a></p>`;
+  };
+  authPage=function(){
+    return `<div class="auth"><aside class="auth-side"><a class="brand" href="#home" data-go="home">${logo(34)}<span class="brand-name">IRIS</span></a><div><h2>Your research workspace, saved to your account.</h2><ul><li>${icon('check',16)}<span>Backend-backed sign-in and separate user accounts.</span></li><li>${icon('check',16)}<span>Saved workspace state, papers and experiment history.</span></li><li>${icon('check',16)}<span>Research modules that call the IRIS API.</span></li></ul></div><p class="faint" style="font-size:13px">Use an email and a password with at least 8 characters.</p></aside><main class="auth-main"><div class="auth-top"><button class="btn ghost sm" data-go="home">Back to site</button>${themeBtn()}</div><div class="card auth-card">${authForm()}</div></main></div>`;
+  };
+  bindAuth=function(){
+    const root=$('.auth-card'); if(!root)return;
+    root.addEventListener('click',e=>{const m=e.target.closest('[data-mode]');if(m){e.preventDefault();AUTH.mode=m.dataset.mode;AUTH.err='';render();}});
+    const f=$('#authForm'); if(!f)return;
+    f.addEventListener('submit',async e=>{
+      e.preventDefault(); const btn=f.querySelector('button[type="submit"]');btn.disabled=true;btn.textContent='Connecting…';
+      const email=$('#a-email').value.trim().toLowerCase(),password=$('#a-password').value,name=$('#a-name')?.value.trim()||'';
+      try{
+        const endpoint=AUTH.mode==='signup'?'/auth/register':'/auth/login';
+        const data=await $api(endpoint,{method:'POST',body:json(AUTH.mode==='signup'?{name,email,password}:{email,password})});
+        USER={name:data.user.name,email:data.user.email,org:'',created:Date.now()};setSession(USER.email);S=loadState();
+        await ensureProject(); await syncProject();
+        const dest=AUTH.pending||'dashboard';AUTH.pending=null;AUTH.err='';go(dest);toast(AUTH.mode==='signup'?'Account created successfully':'Signed in successfully');
+      }catch(err){AUTH.err=err.message||'Unable to sign in';render();}
+    });
+  };
+  signOut=function(){
+    clearTimeout(_st);try{if(S&&USER)localStorage.setItem(stateKey(),JSON.stringify(S));}catch(e){}
+    $api('/auth/logout',{method:'POST',body:'{}'}).catch(()=>{});
+    setSession(null);USER=null;S=null;projectId=null;UI.sel=null;UI.draft={};UI.venueView=null;AUTH.step='form';AUTH.mode='signin';AUTH.err='';go('home');toast('Signed out');
+  };
+
+  // Discover uses live Crossref records through the server, with original DOI/publisher links.
+  PAGES.discover=function(el){
+    el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Discover · Live search</span><h1>Search scholarly papers from Crossref.</h1><p class="muted">Results are retrieved from bibliographic records when the server has internet access. Open the DOI or publisher source before citing.</p></div></div>
+    <section class="card pad"><form id="live-search" style="display:flex;gap:10px;flex-wrap:wrap"><input id="live-q" type="search" style="flex:1;min-width:200px" placeholder="Search a topic, title, author or DOI" value="${esc2(UI.q||'')}" required><button class="btn primary" type="submit">Search papers</button></form><p id="search-status" class="note" style="margin-top:12px">Enter a query to search the scholarly index.</p></section><div id="live-results" class="papers" style="margin-top:16px"></div>
+    <section class="card pad" style="margin-top:16px"><h3 class="h3d">Saved in this workspace</h3><div id="saved-papers">${(S.serverPapers||[]).map((p,i)=>`<div class="doc"><div><b>${esc2(p.title)}</b><small>${esc2(p.authors||'Authors unavailable')} · ${esc2(p.year||'Year unavailable')}</small></div><a href="${esc2(p.url||'#')}" target="_blank" rel="noopener">Open source ↗</a></div>`).join('')||'<p class="muted">Save a search result to build your paper library.</p>'}</div></section>`;
+    const form=$('#live-search');
+    async function search(q){const status=$('#search-status'),out=$('#live-results');status.textContent='Searching Crossref and checking the local reference set…';out.innerHTML='';try{const data=await $api('/papers?q='+encodeURIComponent(q));const papers=data.papers||[];status.textContent=`${papers.length} results · ${data.source||'Bibliographic search'}`;out.innerHTML=papers.length?papers.map((p,i)=>`<article class="card paper"><h3>${esc2(p.title)}</h3><div class="meta"><span>${esc2(p.authors||'Authors unavailable')}</span><span>·</span><span>${esc2(p.venue||'Publication unavailable')} ${esc2(p.year||'')}</span></div><p class="sum">${esc2(p.abstract||'No abstract was supplied in the bibliographic record.')}</p><div class="row"><div class="links">${p.url?`<a href="${esc2(p.url)}" target="_blank" rel="noopener">Open DOI / source ↗</a>`:''}</div><button class="btn sm primary" data-live-save="${i}">Save paper</button></div></article>`).join(''):'<div class="card pad muted">No results found. Try broader keywords.</div>';out.querySelectorAll('[data-live-save]').forEach(b=>b.addEventListener('click',()=>{const p=papers[Number(b.dataset.liveSave)];S.serverPapers=S.serverPapers||[];if(!S.serverPapers.some(x=>x.title===p.title)){S.serverPapers.push(p);save();$('#saved-papers').innerHTML=S.serverPapers.map(x=>`<div class="doc"><div><b>${esc2(x.title)}</b><small>${esc2(x.authors||'Authors unavailable')} · ${esc2(x.year||'Year unavailable')}</small></div><a href="${esc2(x.url||'#')}" target="_blank" rel="noopener">Open source ↗</a></div>`).join('');}b.textContent='Saved';b.disabled=true;toast('Paper saved to your workspace');}));}catch(e){status.textContent='Search failed: '+e.message;}}
+    form.addEventListener('submit',e=>{e.preventDefault();UI.q=$('#live-q').value.trim();search(UI.q);});if(UI.q)search(UI.q);
+  };
+
+  // Copilot requests a real backend response; Ollama can be enabled in the server environment.
+  PAGES.copilot=function(el){
+    const history=S.serverChat||[];
+    el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Research Copilot</span><h1>Ask, compare, and plan with research context.</h1><p class="muted">Uses a local Ollama model when configured; otherwise returns a clearly labelled retrieval-based response.</p></div></div><section class="card pad"><label class="f" for="copilot-context">Optional research context / paper excerpts<textarea id="copilot-context" rows="4" placeholder="Paste an abstract, research question, or findings to ground the answer">${esc2(S.serverContext||'')}</textarea></label><div id="copilot-thread" style="display:grid;gap:12px;margin:16px 0">${history.map(m=>`<article class="card pad"><b>${m.role==='user'?'You':'IRIS Copilot'}</b><p style="white-space:pre-wrap;margin-top:8px">${esc2(m.text)}</p>${m.mode?`<small class="muted">Mode: ${esc2(m.mode)}</small>`:''}</article>`).join('')||'<p class="muted">Your conversation will appear here.</p>'}</div><form id="copilot-form"><label class="f" for="copilot-question">Your question<textarea id="copilot-question" rows="3" required placeholder="e.g. Compare the methods and identify limitations…"></textarea></label><button class="btn primary" type="submit" style="margin-top:10px">Ask IRIS</button></form><p id="copilot-status" class="note" style="margin-top:10px"></p></section>`;
+    $('#copilot-context').addEventListener('input',e=>{S.serverContext=e.target.value;save();});
+    $('#copilot-form').addEventListener('submit',async e=>{e.preventDefault();const q=$('#copilot-question').value.trim();if(!q)return;const btn=e.submitter;btn.disabled=true;btn.textContent='Thinking…';$('#copilot-status').textContent='Request sent to the IRIS backend…';try{const data=await $api('/copilot',{method:'POST',body:json({question:q,context:$('#copilot-context').value})});S.serverChat=S.serverChat||[];S.serverChat.push({role:'user',text:q},{role:'assistant',text:data.answer,mode:data.mode});if(S.serverChat.length>40)S.serverChat=S.serverChat.slice(-40);log(S,'Copilot answered a research question ('+data.mode+')');save();renderPage();}catch(err){$('#copilot-status').textContent='Could not get an answer: '+err.message;btn.disabled=false;btn.textContent='Ask IRIS';}});
+  };
+
+  // Backend experiment engine trains actual scikit-learn models and stores the run in SQLite.
+  PAGES.experiments=function(el){
+    el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Experiment Engine · Server execution</span><h1>Run a reproducible model benchmark.</h1><p class="muted">Train on your own CSV dataset or use the clearly labelled synthetic fallback. For uploaded data, numeric feature columns are used and missing feature values are median-imputed.</p></div></div><div class="exp"><aside class="card ctrl"><h3>Dataset and model</h3><label class="f">Upload your dataset (.csv)<input id="server-csv" type="file" accept=".csv,text/csv"></label><button id="server-upload" class="btn" type="button">Upload CSV</button><p id="server-dataset-status" class="note" style="margin-top:8px">${S.uploadedDataset?`Loaded ${esc2(S.uploadedDataset.filename)} (${S.uploadedDataset.rows} rows).`:`No custom dataset selected; synthetic benchmark will be used.`}</p><label class="f">Target / label column<select id="server-target" ${S.uploadedDataset?'':'disabled'}>${S.uploadedDataset?S.uploadedDataset.columns.map(c=>`<option value="${esc2(c)}" ${c===S.uploadedDataset.columns[S.uploadedDataset.columns.length-1]?'selected':''}>${esc2(c)}</option>`).join(''):'<option>Upload a CSV first</option>'}</select></label><label class="f">Model<select id="server-model"><option>Random Forest</option><option>Extra Trees</option><option>Gradient Boosting</option><option>Logistic Regression</option></select></label><label class="f">Random seed<input id="server-seed" type="number" min="1" max="99999" value="42"></label><label class="f">Test set share<select id="server-test"><option value="0.2">20%</option><option value="0.25" selected>25%</option><option value="0.3">30%</option><option value="0.4">40%</option></select></label><button id="server-run" class="btn primary">Train and evaluate</button><p id="server-exp-status" class="note" style="margin-top:10px"></p></aside><div id="server-exp-out"><div class="card pad muted">Run an experiment to see its metrics and confusion matrix.</div></div></div>`;
+    $('#server-upload').addEventListener('click',async()=>{const f=$('#server-csv').files[0];if(!f){$('#server-dataset-status').textContent='Choose a CSV file first.';return;}const b=$('#server-upload');b.disabled=true;b.textContent='Uploading…';try{const fd=new FormData();fd.append('file',f);const res=await fetch('/api/datasets/upload',{method:'POST',credentials:'same-origin',body:fd});const d=await res.json();if(!res.ok)throw new Error(d.error||'Upload failed');S.uploadedDataset={id:d.dataset_id,filename:d.filename,columns:d.columns,rows:d.rows};save();$('#server-target').innerHTML=d.columns.map(c=>`<option value="${esc2(c)}" ${c===d.suggested_target?'selected':''}>${esc2(c)}</option>`).join('');$('#server-target').disabled=false;$('#server-dataset-status').textContent=`Loaded ${d.filename}: ${d.rows} rows, ${d.columns.length} columns. Select the label column, then run.`;toast('Dataset uploaded');}catch(err){$('#server-dataset-status').textContent='Upload failed: '+err.message;}finally{b.disabled=false;b.textContent='Upload CSV';}});
+    $('#server-run').addEventListener('click',async()=>{const b=$('#server-run');b.disabled=true;b.textContent='Training on server…';$('#server-exp-status').textContent='The model is training and evaluating on a held-out test split.';try{const cfg={model:$('#server-model').value,seed:Number($('#server-seed').value)||42,test_size:Number($('#server-test').value)};if(S.uploadedDataset){cfg.dataset_id=S.uploadedDataset.id;cfg.target=$('#server-target').value;}const d=await $api('/experiments/run',{method:'POST',body:json(cfg)});const r=d.result;S.serverExperiments=S.serverExperiments||[];S.serverExperiments.unshift(r);log(S,'Server experiment completed: '+r.model+' F1 '+r.f1);save();const cm=r.confusion_matrix;$('#server-exp-out').innerHTML=`<div class="metrics">${[['Accuracy',r.accuracy],['Precision',r.precision],['Recall',r.recall],['F1 score',r.f1]].map(([n,v])=>`<div class="card metric"><span class="l">${n}</span><div class="v">${(v*100).toFixed(1)}%</div></div>`).join('')}</div><div class="card pad" style="margin-top:16px"><h3 class="h3d">Confusion matrix</h3><p class="muted">Rows = actual class; columns = predicted class.</p><div class="tscroll"><table class="t"><thead><tr><th>Actual / predicted</th>${cm.map((_,i)=>`<th>Class ${i}</th>`).join('')}</tr></thead><tbody>${cm.map((row,i)=>`<tr><th>Class ${i}</th>${row.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div><p class="note" style="margin-top:12px">Dataset: ${esc2(r.dataset)}. ${esc2(r.note)}</p></div>`;$('#server-exp-status').textContent='Experiment completed and saved to the database.';}catch(err){$('#server-exp-status').textContent='Experiment failed: '+err.message;}finally{b.disabled=false;b.textContent='Train and evaluate';}});
+  };
+
+  // Integrity actions execute server checks; rectification is conservative and re-check is explicit.
+  PAGES.integrity=function(el){
+    el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Integrity &amp; Novelty</span><h1>Check the manuscript, rectify, then revalidate.</h1><p class="muted">The server checks citation markers, references heading, length and sentence readability. It does not currently compare against a full-text plagiarism corpus or certify novelty.</p></div></div><div class="split"><section class="card editor"><div class="bar"><b>Manuscript editor</b><span id="server-word-count">0 words</span></div><textarea id="server-manuscript" rows="22" style="width:100%;min-height:420px">${esc2(S.manuscript||'')}</textarea><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn primary" id="server-check">Run integrity check</button><button class="btn" id="server-rectify">Apply safe corrections</button><button class="btn" id="server-recheck">Revalidate</button></div><p class="note">Safe correction currently cleans spacing and returns editorial recommendations. It does not fabricate sources or rewrite claims.</p></section><section id="server-integrity-report"><div class="card pad muted">Run a check to see findings.</div></section></div>`;
+    const ta=$('#server-manuscript'),wc=()=>$('#server-word-count').textContent=(ta.value.trim().match(/\b[\w'-]+\b/g)||[]).length+' words';wc();ta.addEventListener('input',()=>{S.manuscript=ta.value;wc();save();});
+    async function check(){const b=$('#server-check');b.disabled=true;b.textContent='Checking…';try{const d=await $api('/integrity/check',{method:'POST',body:json({manuscript:ta.value})});integrityLast=d.report;S.serverIntegrity=d.report;const r=d.report;$('#server-integrity-report').innerHTML=`<div class="card pad"><h3 class="h3d">${esc2(r.status)}</h3><div class="metrics" style="margin-top:12px">${[['Words',r.word_count],['Sentences',r.sentence_count],['Citation markers',r.citation_markers],['Reference heading',r.reference_heading_detected?'Found':'Missing']].map(([n,v])=>`<div class="card metric"><span class="l">${n}</span><div class="v" style="font-size:20px">${esc2(v)}</div></div>`).join('')}</div><h4 style="margin-top:16px">Findings</h4>${r.findings.length?r.findings.map(f=>`<article class="card pad" style="margin-top:8px"><b>${esc2(f.type)} · ${esc2(f.severity)}</b><p style="margin-top:6px">${esc2(f.message)}</p></article>`).join(''):'<p>No heuristic flags were raised; still verify the manuscript manually.</p>'}<p class="note" style="margin-top:12px">${esc2(r.limitations)}</p></div>`;save();}catch(err){$('#server-integrity-report').innerHTML=`<div class="card pad">${esc2(err.message)}</div>`;}finally{b.disabled=false;b.textContent='Run integrity check';}}
+    async function rectify(){const b=$('#server-rectify');b.disabled=true;try{const d=await $api('/integrity/rectify',{method:'POST',body:json({manuscript:ta.value})});ta.value=d.revised_text;S.manuscript=ta.value;wc();save();$('#server-integrity-report').innerHTML=`<div class="card pad"><h3 class="h3d">Safe cleanup applied</h3><p style="margin-top:8px">${esc2(d.note)}</p><ul>${d.suggestions.map(s=>`<li>${esc2(s)}</li>`).join('')}</ul><p class="note">Click Revalidate to run the checks again on the corrected text.</p></div>`;}catch(err){$('#server-integrity-report').innerHTML=`<div class="card pad">${esc2(err.message)}</div>`;}finally{b.disabled=false;}}
+    $('#server-check').addEventListener('click',check);$('#server-recheck').addEventListener('click',check);$('#server-rectify').addEventListener('click',rectify);
+  };
+
+  // Publication venues are loaded from the backend rather than relying only on a static list.
+  const oldPublish=PAGES.publish;
+  PAGES.publish=function(el){
+    el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Publish</span><h1>Explore venues and prepare a submission.</h1><p class="muted">Venue details are starting points. Confirm scope, indexing, fees and current author requirements on the official site.</p></div></div><div id="server-venues" class="venues"><div class="card pad muted">Loading publication venues…</div></div>`;
+    $api('/publication/venues').then(d=>{$('#server-venues').innerHTML=(d.venues||[]).map(v=>`<article class="card pad" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h3 class="h3d">${esc2(v.name)}</h3><span class="pill">${esc2(v.type)}</span></div><a class="btn sm" href="${esc2(v.url)}" target="_blank" rel="noopener">Official website ↗</a></div><p style="margin-top:10px">${esc2(v.fit)}</p></article>`).join('')+`<p class="note">${esc2(d.note||'')}</p>`;}).catch(e=>$('#server-venues').innerHTML=`<div class="card pad">Could not load venues: ${esc2(e.message)}</div>`);
+  };
+
+  // Dashboard shows the signed-in user's saved server-backed workspace state.
+  PAGES.dashboard=function(el){
+    const runs=S.serverExperiments||[],papers=S.serverPapers||[],chat=S.serverChat||[];
+    el.innerHTML=`<div class="page-head"><div><span class="eyebrow">Workspace</span><h1>Welcome back, ${esc2(USER.name.split(' ')[0])}.</h1><p class="muted">Your IRIS workspace is connected to the backend. Continue from any stage of your research workflow.</p></div></div><div class="metrics">${[['Saved papers',papers.length],['Server experiments',runs.length],['Copilot messages',chat.length],['Manuscript words',(S.manuscript.match(/\b[\w'-]+\b/g)||[]).length]].map(([n,v])=>`<div class="card metric"><span class="l">${n}</span><div class="v">${v}</div></div>`).join('')}</div><div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px">${[['discover','Find research papers','Search scholarly records and save papers to your workspace.'],['copilot','Ask Research Copilot','Explore methods, limitations, and next steps.'],['experiments','Run an experiment','Train a model and save metrics to your account.'],['integrity','Validate manuscript','Check citations and readability, apply safe fixes, and revalidate.'],['publish','Prepare publication','Review potential venues and official submission pages.']].map(([r,t,d])=>`<button class="card pad" data-go="${r}" style="text-align:left;cursor:pointer"><h3 class="h3d">${t} ↗</h3><p class="muted" style="margin-top:8px">${d}</p></button>`).join('')}</div><section class="card pad" style="margin-top:18px"><h3 class="h3d">Recent activity</h3>${S.activity.length?`<ul style="margin-top:10px">${S.activity.slice(0,8).map(a=>`<li>${esc2(a.text)}</li>`).join('')}</ul>`:'<p class="muted">Your activity will appear here as you use IRIS.</p>'}</section>`;
+  };
+
+  // Update initial workspace and render using the replacement modules.
+  (async()=>{
+    try{
+      if(USER){
+        try{const me=await $api('/auth/me');USER={...USER,...me.user};await ensureProject();}
+        catch(e){USER=null;S=null;setSession(null);if(APP_ROUTES.includes(cur))cur='auth';}
+      }
+      if(cur==='auth')render(); else if(cur!=='home')render();
+    }catch(e){console.warn('IRIS startup sync:',e.message);}
+    const status=document.getElementById('iris-api-status');if(status){try{await $api('/health');status.textContent='IRIS API · online';status.style.color='var(--good)';}catch(e){status.textContent='IRIS API · offline';}}
+  })();
+})();
+
+</script>
+</body></html>

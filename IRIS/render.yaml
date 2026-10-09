@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: iris-research-platform
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: IRIS_SECRET_KEY
+        generateValue: true
+      - key: IRIS_SECURE_COOKIES
+        value: "1"
